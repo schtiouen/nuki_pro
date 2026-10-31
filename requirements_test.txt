@@ -1,0 +1,2 @@
+pytest-homeassistant-custom-component==0.13.375
+paho-mqtt==2.1.0

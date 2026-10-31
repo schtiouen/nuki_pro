@@ -1,0 +1,152 @@
+lock_action:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+  fields:
+    action:
+      required: true
+      example: lock_n_go
+      selector:
+        select:
+          translation_key: lock_action
+          options:
+            - unlock
+            - lock
+            - unlatch
+            - lock_n_go
+            - lock_n_go_unlatch
+            - full_lock
+    transport:
+      required: false
+      selector:
+        select:
+          translation_key: transport
+          options:
+            - auto
+            - mqtt
+            - web
+
+create_keypad_code:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+  fields:
+    name:
+      required: true
+      example: Femme de ménage
+      selector:
+        text:
+    code:
+      required: true
+      example: "385729"
+      selector:
+        text:
+    allowed_from_date:
+      selector:
+        datetime:
+    allowed_until_date:
+      selector:
+        datetime:
+    allowed_weekdays:
+      selector:
+        select:
+          multiple: true
+          translation_key: weekdays
+          options:
+            - mon
+            - tue
+            - wed
+            - thu
+            - fri
+            - sat
+            - sun
+    allowed_from_time:
+      selector:
+        time:
+    allowed_until_time:
+      selector:
+        time:
+
+update_authorization:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+  fields:
+    authorization:
+      required: true
+      example: Femme de ménage
+      selector:
+        text:
+    name:
+      selector:
+        text:
+    enabled:
+      selector:
+        boolean:
+    remote_allowed:
+      selector:
+        boolean:
+    code:
+      example: "385729"
+      selector:
+        text:
+    allowed_from_date:
+      selector:
+        datetime:
+    allowed_until_date:
+      selector:
+        datetime:
+    allowed_weekdays:
+      selector:
+        select:
+          multiple: true
+          translation_key: weekdays
+          options:
+            - mon
+            - tue
+            - wed
+            - thu
+            - fri
+            - sat
+            - sun
+    allowed_from_time:
+      selector:
+        time:
+    allowed_until_time:
+      selector:
+        time:
+
+delete_authorization:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+  fields:
+    authorization:
+      required: true
+      example: Femme de ménage
+      selector:
+        text:
+
+get_authorizations:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+
+get_logs:
+  target:
+    entity:
+      integration: nuki_pro
+      domain: lock
+  fields:
+    limit:
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 50
+          mode: box

@@ -1,0 +1,21 @@
+{
+  "domain": "nuki_pro",
+  "name": "Nuki Pro",
+  "after_dependencies": [
+    "mqtt"
+  ],
+  "codeowners": [
+    "@schtiouen"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/schtiouen/nuki_pro",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/schtiouen/nuki_pro/issues",
+  "mqtt": [
+    "nuki/+/deviceType"
+  ],
+  "requirements": [],
+  "version": "0.1.0"
+}

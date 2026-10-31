@@ -1,0 +1,743 @@
+{
+  "device": {
+    "door_sensor": {
+      "name": "{lock} door sensor"
+    },
+    "keypad": {
+      "name": "{lock} keypad"
+    },
+    "fob": {
+      "name": "{lock} fob"
+    }
+  },
+  "issues": {
+    "mqtt_unavailable": {
+      "title": "Nuki Pro: MQTT unavailable",
+      "description": "{name} is set up to use MQTT, but the MQTT integration is not available. The lock keeps working through the Nuki Web API. Set up MQTT again, or turn MQTT off with Reconfigure."
+    }
+  },
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Nuki Web API token",
+        "description": "Create an API token on {token_url} (menu API, generate token). Tick the permissions to view and manage the smart locks, operate them, manage authorizations and config, and view the activity log.",
+        "data": {
+          "api_token": "API token"
+        },
+        "data_description": {
+          "api_token": "The token gives access to your Nuki account: keep it secret."
+        }
+      },
+      "select_lock": {
+        "title": "Choose the lock",
+        "data": {
+          "nuki_id": "Lock"
+        }
+      },
+      "mqtt_setup": {
+        "title": "Local MQTT (optional)",
+        "description": "MQTT is optional and off by default: like hass_nuki_ng, everything then goes through the Web API, polled every 30 s. With MQTT, the state arrives instantly and lock actions stay on your network; enable MQTT in the Nuki app with your broker first. Lock found on the broker: {detected}",
+        "data": {
+          "use_mqtt": "Use MQTT",
+          "mqtt_topic": "Lock topic"
+        },
+        "data_description": {
+          "mqtt_topic": "Usually nuki/{nuki_id}."
+        }
+      },
+      "reauth_confirm": {
+        "title": "New Nuki Web API token",
+        "description": "The token of {name} was rejected. Create a new one on {token_url}.",
+        "data": {
+          "api_token": "API token"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure {name}",
+        "description": "Leave the token empty to keep the current one.",
+        "data": {
+          "api_token": "API token",
+          "use_mqtt": "Use MQTT",
+          "mqtt_topic": "Lock topic"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Token rejected.",
+      "missing_scope": "The token lacks a required permission.",
+      "cannot_connect": "Cannot reach the Nuki Web API.",
+      "unknown": "Unexpected error.",
+      "no_devices": "No smart lock on this account.",
+      "lock_not_in_account": "This lock is not on this Nuki account.",
+      "mqtt_no_data": "Nothing received on this topic: check MQTT in the Nuki app, or untick MQTT.",
+      "mqtt_not_configured": "The MQTT integration is not set up."
+    },
+    "abort": {
+      "already_configured": "This lock is already configured.",
+      "invalid_discovery_info": "Invalid MQTT discovery message.",
+      "not_supported": "This Nuki device is not a smart lock.",
+      "reauth_successful": "Token updated.",
+      "reconfigure_successful": "Configuration updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nuki Pro options",
+        "data": {
+          "scan_interval": "Web API polling interval",
+          "action_transport": "Channel for lock actions",
+          "auth_entities": "One switch per user or code"
+        },
+        "data_description": {
+          "scan_interval": "Leave empty for automatic: 30 s, or 300 s while MQTT is online."
+        }
+      }
+    }
+  },
+  "selector": {
+    "action_transport": {
+      "options": {
+        "auto": "Automatic (MQTT when online, else Web API)",
+        "mqtt": "MQTT only (local)",
+        "web": "Web API only (cloud)"
+      }
+    },
+    "transport": {
+      "options": {
+        "auto": "Automatic (MQTT when online, else Web API)",
+        "mqtt": "MQTT only (local)",
+        "web": "Web API only (cloud)"
+      }
+    },
+    "lock_action": {
+      "options": {
+        "unlock": "Unlock",
+        "lock": "Lock",
+        "unlatch": "Unlatch",
+        "lock_n_go": "Lock 'n' Go",
+        "lock_n_go_unlatch": "Lock 'n' Go with unlatch",
+        "full_lock": "Full lock"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "locked": {
+        "name": "Locked"
+      },
+      "battery_critical": {
+        "name": "Battery critical"
+      },
+      "tamper": {
+        "name": "Tamper"
+      },
+      "night_mode": {
+        "name": "Night mode active"
+      },
+      "mqtt_connected": {
+        "name": "MQTT connection"
+      },
+      "server_connected": {
+        "name": "Nuki server connection"
+      },
+      "web_api_connected": {
+        "name": "Web API connection"
+      }
+    },
+    "button": {
+      "lock_n_go": {
+        "name": "Lock 'n' Go"
+      },
+      "lock_n_go_unlatch": {
+        "name": "Lock 'n' Go with unlatch"
+      },
+      "full_lock": {
+        "name": "Full lock"
+      },
+      "refresh": {
+        "name": "Refresh"
+      }
+    },
+    "event": {
+      "activity": {
+        "name": "Activity",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unlock": "Unlock",
+              "lock": "Lock",
+              "unlatch": "Unlatch",
+              "lock_n_go": "Lock 'n' Go",
+              "lock_n_go_unlatch": "Lock 'n' Go with unlatch",
+              "full_lock": "Full lock",
+              "button_no_action": "Button pressed (no action set)",
+              "fob_no_action": "Fob pressed (no action set)",
+              "wrong_code": "Wrong keypad code",
+              "wrong_fingerprint": "Fingerprint rejected"
+            }
+          }
+        }
+      },
+      "door_events": {
+        "name": "Events",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "door_opened": "Door opened",
+              "door_closed": "Door closed",
+              "door_ajar_warning": "Door left open",
+              "door_status_mismatch": "Door status mismatch",
+              "door_sensor_jammed": "Door sensor jammed"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "auto_lock_timeout": {
+        "name": "Auto lock timeout"
+      }
+    },
+    "select": {
+      "single_button_press_action": {
+        "name": "Single button press",
+        "state": {
+          "no_action": "No action",
+          "intelligent": "Intelligent",
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "unlatch": "Unlatch",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Show status"
+        }
+      },
+      "double_button_press_action": {
+        "name": "Double button press",
+        "state": {
+          "no_action": "No action",
+          "intelligent": "Intelligent",
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "unlatch": "Unlatch",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Show status"
+        }
+      },
+      "motor_speed": {
+        "name": "Motor speed",
+        "state": {
+          "standard": "Standard",
+          "fast": "Fast",
+          "slow": "Slow"
+        }
+      },
+      "lng_timeout": {
+        "name": "Lock 'n' Go timeout",
+        "state": {
+          "5": "5 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s",
+          "45": "45 s",
+          "60": "60 s"
+        }
+      },
+      "unlatch_duration": {
+        "name": "Unlatch duration",
+        "state": {
+          "1": "1 s",
+          "3": "3 s",
+          "5": "5 s",
+          "7": "7 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s"
+        }
+      },
+      "fob_action_1": {
+        "name": "Single press",
+        "state": {
+          "none": "None",
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_2": {
+        "name": "Double press",
+        "state": {
+          "none": "None",
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_3": {
+        "name": "Triple press",
+        "state": {
+          "none": "None",
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "advertising_mode": {
+        "name": "Bluetooth advertising mode",
+        "state": {
+          "automatic": "Automatic",
+          "normal": "Normal",
+          "slow": "Slow",
+          "slowest": "Slowest"
+        }
+      },
+      "battery_type": {
+        "name": "Battery type",
+        "state": {
+          "alkali": "Alkaline",
+          "accumulator": "Rechargeable",
+          "lithium": "Lithium"
+        }
+      }
+    },
+    "sensor": {
+      "lock_state": {
+        "name": "Lock state",
+        "state": {
+          "uncalibrated": "Uncalibrated",
+          "locked": "Locked",
+          "unlocking": "Unlocking",
+          "unlocked": "Unlocked",
+          "locking": "Locking",
+          "unlatched": "Unlatched",
+          "unlocked_lock_n_go": "Unlocked (Lock 'n' Go)",
+          "unlatching": "Unlatching",
+          "error_wrong_entry_code": "Wrong entry code",
+          "error_wrong_fingerprint": "Wrong fingerprint",
+          "motor_blocked": "Motor blocked",
+          "undefined": "Undefined"
+        }
+      },
+      "lock_mode": {
+        "name": "Mode",
+        "state": {
+          "uninitialized": "Uninitialized",
+          "pairing": "Pairing",
+          "door": "Door mode",
+          "continuous": "Continuous mode",
+          "maintenance": "Maintenance",
+          "off_door_charging": "Charging off the door"
+        }
+      },
+      "door_state": {
+        "name": "State",
+        "state": {
+          "unavailable": "Unavailable",
+          "deactivated": "Deactivated",
+          "closed": "Closed",
+          "opened": "Open",
+          "unknown": "Unknown",
+          "calibrating": "Calibrating",
+          "uncalibrated": "Uncalibrated",
+          "removed": "Removed (tampered)"
+        }
+      },
+      "door_security_state": {
+        "name": "Door security",
+        "state": {
+          "closed_and_locked": "Closed and locked",
+          "closed_and_unlocked": "Closed, not locked",
+          "open": "Open"
+        }
+      },
+      "last_user": {
+        "name": "Last user",
+        "state_attributes": {
+          "action": {
+            "name": "Action"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "auth_id": {
+            "name": "Authorization ID"
+          },
+          "timestamp": {
+            "name": "Timestamp"
+          },
+          "origin": {
+            "name": "Origin"
+          },
+          "presses": {
+            "name": "Presses"
+          }
+        }
+      },
+      "last_unlock_user": {
+        "name": "Last unlock user",
+        "state_attributes": {
+          "action": {
+            "name": "Action"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "auth_id": {
+            "name": "Authorization ID"
+          },
+          "timestamp": {
+            "name": "Timestamp"
+          },
+          "origin": {
+            "name": "Origin"
+          },
+          "presses": {
+            "name": "Presses"
+          }
+        }
+      },
+      "last_unlatch_user": {
+        "name": "Last unlatch user",
+        "state_attributes": {
+          "action": {
+            "name": "Action"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "auth_id": {
+            "name": "Authorization ID"
+          },
+          "timestamp": {
+            "name": "Timestamp"
+          },
+          "origin": {
+            "name": "Origin"
+          },
+          "presses": {
+            "name": "Presses"
+          }
+        }
+      },
+      "last_lock_user": {
+        "name": "Last lock user",
+        "state_attributes": {
+          "action": {
+            "name": "Action"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "auth_id": {
+            "name": "Authorization ID"
+          },
+          "timestamp": {
+            "name": "Timestamp"
+          },
+          "origin": {
+            "name": "Origin"
+          },
+          "presses": {
+            "name": "Presses"
+          }
+        }
+      },
+      "last_action": {
+        "name": "Last action",
+        "state": {
+          "unlock": "Unlock",
+          "lock": "Lock",
+          "unlatch": "Unlatch",
+          "lock_n_go": "Lock 'n' Go",
+          "lock_n_go_unlatch": "Lock 'n' Go with unlatch",
+          "full_lock": "Full lock"
+        },
+        "state_attributes": {
+          "action": {
+            "name": "Action"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "auth_id": {
+            "name": "Authorization ID"
+          },
+          "timestamp": {
+            "name": "Timestamp"
+          },
+          "origin": {
+            "name": "Origin"
+          },
+          "presses": {
+            "name": "Presses"
+          }
+        }
+      },
+      "last_action_trigger": {
+        "name": "Last action trigger",
+        "state": {
+          "system": "System / Bluetooth",
+          "manual": "Manual",
+          "button": "Button",
+          "automatic": "Automatic",
+          "web": "Web",
+          "app": "App",
+          "auto_lock": "Auto lock",
+          "accessory": "Accessory",
+          "keypad": "Keypad",
+          "keypad_error": "Keypad error",
+          "nuki_mode": "Nuki mode",
+          "homekit_matter": "HomeKit / Matter",
+          "mqtt": "MQTT"
+        }
+      },
+      "last_action_time": {
+        "name": "Last action time"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "server_state": {
+        "name": "Nuki server state",
+        "state": {
+          "ok": "OK",
+          "unregistered": "Unregistered",
+          "auth_uuid_invalid": "Invalid authorization UUID",
+          "auth_invalid": "Invalid authorization",
+          "offline": "Offline"
+        }
+      },
+      "keypad_mounting_state": {
+        "name": "Mounting",
+        "state": {
+          "unknown": "Unknown",
+          "mounted": "Mounted",
+          "moved": "Moved",
+          "error": "Error (theft detection)"
+        }
+      }
+    },
+    "switch": {
+      "auto_lock": {
+        "name": "Auto lock"
+      },
+      "button_enabled": {
+        "name": "Button enabled"
+      },
+      "led_enabled": {
+        "name": "LED enabled"
+      },
+      "auto_update": {
+        "name": "Automatic updates"
+      },
+      "slow_speed_night_mode": {
+        "name": "Slow speed in night mode"
+      },
+      "pairing_enabled": {
+        "name": "Pairing via button"
+      },
+      "detached_cylinder": {
+        "name": "Detached cylinder"
+      },
+      "lift_up_handle": {
+        "name": "Lift-up handle"
+      },
+      "automatic_battery_type_detection": {
+        "name": "Automatic battery type detection"
+      },
+      "authorization": {
+        "name": "Access {name}"
+      }
+    }
+  },
+  "exceptions": {
+    "web_api_required": {
+      "message": "This action needs the Nuki Web API token."
+    },
+    "auth_failed": {
+      "message": "The Nuki Web API token was rejected; renew it."
+    },
+    "web_api_error": {
+      "message": "Nuki Web API error: {error}"
+    },
+    "mqtt_unavailable": {
+      "message": "The MQTT integration is not available."
+    },
+    "mqtt_offline": {
+      "message": "The lock is not reachable over MQTT."
+    },
+    "mqtt_no_response": {
+      "message": "The lock did not answer the MQTT command."
+    },
+    "mqtt_command_failed": {
+      "message": "The lock rejected the command: {reason} (code {code})."
+    },
+    "settings_unknown": {
+      "message": "Settings not loaded yet: wait for the first Web API read."
+    },
+    "authorization_not_found": {
+      "message": "No authorization named or with id \"{authorization}\"."
+    },
+    "authorization_ambiguous": {
+      "message": "Several authorizations are named \"{authorization}\": use the id instead."
+    },
+    "code_not_keypad": {
+      "message": "Only keypad codes have a code."
+    },
+    "nothing_to_update": {
+      "message": "Nothing to update."
+    }
+  },
+  "services": {
+    "lock_action": {
+      "name": "Lock action",
+      "description": "Runs a Nuki lock action (Lock 'n' Go, full lock...).",
+      "fields": {
+        "action": {
+          "name": "Action",
+          "description": "Action to run."
+        },
+        "transport": {
+          "name": "Channel",
+          "description": "Force MQTT or Web API; automatic by default."
+        }
+      }
+    },
+    "create_keypad_code": {
+      "name": "Create keypad code",
+      "description": "Adds a keypad code, with optional time limits.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Shown in the log (32 characters max)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "6 digits from 1 to 9, not starting with 12."
+        },
+        "allowed_from_date": {
+          "name": "Valid from",
+          "description": "First day and time the authorization works."
+        },
+        "allowed_until_date": {
+          "name": "Valid until",
+          "description": "Last day and time the authorization works."
+        },
+        "allowed_weekdays": {
+          "name": "Allowed weekdays",
+          "description": "Leave empty for every day."
+        },
+        "allowed_from_time": {
+          "name": "Daily start time",
+          "description": "Start of the daily time window."
+        },
+        "allowed_until_time": {
+          "name": "Daily end time",
+          "description": "End of the daily time window."
+        }
+      }
+    },
+    "update_authorization": {
+      "name": "Update authorization",
+      "description": "Renames, enables or disables, restricts, or changes the code of a user, fob or keypad code.",
+      "fields": {
+        "authorization": {
+          "name": "Authorization",
+          "description": "Name or id (see the Access switches attributes)."
+        },
+        "name": {
+          "name": "New name",
+          "description": "New name (32 characters max)."
+        },
+        "enabled": {
+          "name": "Enabled",
+          "description": "Enable or disable the access."
+        },
+        "remote_allowed": {
+          "name": "Remote access",
+          "description": "Allow use from outside (app users)."
+        },
+        "code": {
+          "name": "New code",
+          "description": "6 digits from 1 to 9, not starting with 12."
+        },
+        "allowed_from_date": {
+          "name": "Valid from",
+          "description": "First day and time the authorization works."
+        },
+        "allowed_until_date": {
+          "name": "Valid until",
+          "description": "Last day and time the authorization works."
+        },
+        "allowed_weekdays": {
+          "name": "Allowed weekdays",
+          "description": "Leave empty for every day."
+        },
+        "allowed_from_time": {
+          "name": "Daily start time",
+          "description": "Start of the daily time window."
+        },
+        "allowed_until_time": {
+          "name": "Daily end time",
+          "description": "End of the daily time window."
+        }
+      }
+    },
+    "delete_authorization": {
+      "name": "Delete authorization",
+      "description": "Deletes a user, fob or keypad code.",
+      "fields": {
+        "authorization": {
+          "name": "Authorization",
+          "description": "Name or id."
+        }
+      }
+    },
+    "get_authorizations": {
+      "name": "List authorizations",
+      "description": "Returns users, fobs and keypad codes (without the codes)."
+    },
+    "get_logs": {
+      "name": "Read the activity log",
+      "description": "Returns the latest log entries from the Nuki Web API.",
+      "fields": {
+        "limit": {
+          "name": "Entries",
+          "description": "Number of entries (1 to 50)."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "night_mode": {
+        "default": "mdi:weather-night"
+      },
+      "mqtt_connected": {
+        "default": "mdi:lan-connect"
+      },
+      "server_connected": {
+        "default": "mdi:server-network"
+      },
+      "web_api_connected": {
+        "default": "mdi:cloud-check-outline"
+      },
+      "tamper": {
+        "default": "mdi:shield-alert-outline"
+      }
+    },
+    "button": {
+      "lock_n_go": {
+        "default": "mdi:walk"
+      },
+      "lock_n_go_unlatch": {
+        "default": "mdi:door-open"
+      },
+      "full_lock": {
+        "default": "mdi:lock-plus"
+      },
+      "refresh": {
+        "default": "mdi:refresh"
+      }
+    },
+    "event": {
+      "activity": {
+        "default": "mdi:lock-clock"
+      },
+      "door_events": {
+        "default": "mdi:door"
+      }
+    },
+    "number": {
+      "auto_lock_timeout": {
+        "default": "mdi:timer-lock-outline"
+      }
+    },
+    "select": {
+      "single_button_press_action": {
+        "default": "mdi:gesture-tap-button"
+      },
+      "double_button_press_action": {
+        "default": "mdi:gesture-double-tap"
+      },
+      "motor_speed": {
+        "default": "mdi:speedometer"
+      },
+      "lng_timeout": {
+        "default": "mdi:timer-lock-outline"
+      },
+      "unlatch_duration": {
+        "default": "mdi:timer-outline"
+      },
+      "fob_action_1": {
+        "default": "mdi:remote"
+      },
+      "fob_action_2": {
+        "default": "mdi:remote"
+      },
+      "fob_action_3": {
+        "default": "mdi:remote"
+      },
+      "advertising_mode": {
+        "default": "mdi:bluetooth"
+      },
+      "battery_type": {
+        "default": "mdi:battery"
+      }
+    },
+    "sensor": {
+      "lock_state": {
+        "default": "mdi:lock-question",
+        "state": {
+          "locked": "mdi:lock",
+          "unlocking": "mdi:lock-open-variant-outline",
+          "unlocked": "mdi:lock-open-variant",
+          "locking": "mdi:lock-outline",
+          "unlatched": "mdi:door-open",
+          "unlocked_lock_n_go": "mdi:walk",
+          "unlatching": "mdi:door-open",
+          "motor_blocked": "mdi:lock-alert"
+        }
+      },
+      "lock_mode": {
+        "default": "mdi:cog-outline"
+      },
+      "door_state": {
+        "default": "mdi:door",
+        "state": {
+          "closed": "mdi:door-closed",
+          "opened": "mdi:door-open"
+        }
+      },
+      "door_security_state": {
+        "default": "mdi:door-closed-lock",
+        "state": {
+          "closed_and_locked": "mdi:door-closed-lock",
+          "closed_and_unlocked": "mdi:door-closed",
+          "open": "mdi:door-open"
+        }
+      },
+      "last_user": {
+        "default": "mdi:account-clock"
+      },
+      "last_unlock_user": {
+        "default": "mdi:account-lock-open"
+      },
+      "last_unlatch_user": {
+        "default": "mdi:door-open"
+      },
+      "last_lock_user": {
+        "default": "mdi:account-lock"
+      },
+      "last_action": {
+        "default": "mdi:history"
+      },
+      "last_action_trigger": {
+        "default": "mdi:gesture-tap"
+      },
+      "last_action_time": {
+        "default": "mdi:clock-outline"
+      },
+      "firmware": {
+        "default": "mdi:chip"
+      },
+      "server_state": {
+        "default": "mdi:cloud-outline"
+      },
+      "keypad_mounting_state": {
+        "default": "mdi:dialpad"
+      }
+    },
+    "switch": {
+      "auto_lock": {
+        "default": "mdi:lock-clock"
+      },
+      "button_enabled": {
+        "default": "mdi:gesture-tap-button"
+      },
+      "led_enabled": {
+        "default": "mdi:led-on"
+      },
+      "auto_update": {
+        "default": "mdi:update"
+      },
+      "slow_speed_night_mode": {
+        "default": "mdi:speedometer-slow"
+      },
+      "pairing_enabled": {
+        "default": "mdi:bluetooth-connect"
+      },
+      "detached_cylinder": {
+        "default": "mdi:key-variant"
+      },
+      "lift_up_handle": {
+        "default": "mdi:arrow-up-bold-box-outline"
+      },
+      "automatic_battery_type_detection": {
+        "default": "mdi:battery-sync"
+      },
+      "authorization": {
+        "default": "mdi:account-key"
+      }
+    }
+  },
+  "services": {
+    "lock_action": {
+      "service": "mdi:lock"
+    },
+    "create_keypad_code": {
+      "service": "mdi:dialpad"
+    },
+    "update_authorization": {
+      "service": "mdi:account-edit"
+    },
+    "delete_authorization": {
+      "service": "mdi:account-remove"
+    },
+    "get_authorizations": {
+      "service": "mdi:account-multiple"
+    },
+    "get_logs": {
+      "service": "mdi:history"
+    }
+  }
+}
