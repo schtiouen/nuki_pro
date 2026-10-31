@@ -173,3 +173,7 @@ uv pip install --python .venv/bin/python -r requirements_test.txt
 27 tests couvrent le mode Web API seule, le mode MQTT, les accessoires, l'assistant de configuration et les diagnostics (Home Assistant 2026.10.4). Ils tournent aussi dans GitHub Actions, avec les validations hassfest et HACS.
 
 Sources : [spécification Web API](https://api.nuki.io/static/swagger/swagger.json), [spécification MQTT v1.6](https://developer.nuki.io/t/about-the-mqtt-category/14233), [documentation Nuki](https://docs.nuki.io/guide/).
+
+## Licence
+
+[MIT](LICENSE) © 2026 msaid_dev.
