@@ -80,7 +80,7 @@ Si vous utilisiez une autre intégration Nuki, supprimez-la et révoquez son jet
 
 ## Langues
 
-L'interface existe en **français** et en **anglais**. Les formulaires, états, actions et messages d'erreur suivent la langue de chaque utilisateur ; les noms des entités et des appareils sont créés dans la langue du système au moment de l'ajout de l'intégration. Les autres langues retombent sur l'anglais. Les traductions sont les bienvenues dans `custom_components/nuki_pro/translations/`.
+L'interface existe en **français**, **anglais**, **allemand**, **espagnol**, **néerlandais** et **italien**. Les formulaires, états, actions et messages d'erreur suivent la langue de chaque utilisateur ; les noms des entités et des appareils sont créés dans la langue du système au moment de l'ajout de l'intégration. Les autres langues retombent sur l'anglais. Les nouvelles traductions sont les bienvenues dans `custom_components/nuki_pro/translations/` (`tests/test_translations.py` vérifie que chaque fichier a les mêmes clés et paramètres que `en.json`).
 
 ## Services
 
@@ -182,7 +182,7 @@ uv pip install --python .venv/bin/python -r requirements_test.txt
 .venv/bin/python -m pytest tests/
 ```
 
-28 tests couvrent le mode Web API seule, le mode MQTT, les accessoires, l'assistant de configuration, les diagnostics et le logo (Home Assistant 2026.10.4). Ils tournent aussi dans GitHub Actions, avec les validations hassfest et HACS.
+36 tests couvrent le mode Web API seule, le mode MQTT, les accessoires, l'assistant de configuration, les diagnostics, le logo et les traductions (Home Assistant 2026.10.4). Ils tournent aussi dans GitHub Actions, avec les validations hassfest et HACS.
 
 Sources : [spécification Web API](https://api.nuki.io/static/swagger/swagger.json), [spécification MQTT v1.6](https://developer.nuki.io/t/about-the-mqtt-category/14233), [documentation Nuki](https://docs.nuki.io/guide/).
 

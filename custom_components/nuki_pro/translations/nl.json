@@ -1,0 +1,743 @@
+{
+  "device": {
+    "door_sensor": {
+      "name": "{lock} deursensor"
+    },
+    "keypad": {
+      "name": "{lock} keypad"
+    },
+    "fob": {
+      "name": "{lock} fob"
+    }
+  },
+  "issues": {
+    "mqtt_unavailable": {
+      "title": "Nuki Pro: MQTT niet beschikbaar",
+      "description": "{name} is ingesteld om MQTT te gebruiken, maar de MQTT-integratie is niet beschikbaar. Het slot blijft werken via de Nuki Web API. Stel MQTT opnieuw in, of schakel MQTT uit door de integratie opnieuw te configureren."
+    }
+  },
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Nuki Web API-token",
+        "description": "Maak een API-token aan op {token_url} (menu API, token genereren). Vink de machtigingen aan om de Smart Locks te bekijken en te beheren, ze te bedienen, autorisaties en configuratie te beheren, en het activiteitenlogboek te bekijken.",
+        "data": {
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_token": "Het token geeft toegang tot je Nuki-account: houd het geheim."
+        }
+      },
+      "select_lock": {
+        "title": "Kies het slot",
+        "data": {
+          "nuki_id": "Slot"
+        }
+      },
+      "mqtt_setup": {
+        "title": "Lokale MQTT (optioneel)",
+        "description": "MQTT is optioneel en standaard uitgeschakeld: alles loopt dan via de Web API, die elke 30 s wordt bevraagd. Met MQTT komt de status direct binnen en blijven slotacties binnen je netwerk; activeer eerst MQTT met je broker in de Nuki-app. Slot gevonden op de broker: {detected}",
+        "data": {
+          "use_mqtt": "MQTT gebruiken",
+          "mqtt_topic": "Topic van het slot"
+        },
+        "data_description": {
+          "mqtt_topic": "Meestal nuki/{nuki_id}."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nieuw Nuki Web API-token",
+        "description": "Het token van {name} is geweigerd. Maak er een nieuw aan op {token_url}.",
+        "data": {
+          "api_token": "API-token"
+        }
+      },
+      "reconfigure": {
+        "title": "{name} opnieuw configureren",
+        "description": "Laat het token leeg om het huidige te behouden.",
+        "data": {
+          "api_token": "API-token",
+          "use_mqtt": "MQTT gebruiken",
+          "mqtt_topic": "Topic van het slot"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Token geweigerd.",
+      "missing_scope": "Het token mist een vereiste machtiging.",
+      "cannot_connect": "Kan de Nuki Web API niet bereiken.",
+      "unknown": "Onverwachte fout.",
+      "no_devices": "Geen Smart Lock in dit account.",
+      "lock_not_in_account": "Dit slot hoort niet bij dit Nuki-account.",
+      "mqtt_no_data": "Niets ontvangen op dit topic: controleer MQTT in de Nuki-app, of vink MQTT uit.",
+      "mqtt_not_configured": "De MQTT-integratie is niet ingesteld."
+    },
+    "abort": {
+      "already_configured": "Dit slot is al geconfigureerd.",
+      "invalid_discovery_info": "Ongeldig MQTT-discoverybericht.",
+      "not_supported": "Dit Nuki-apparaat is geen Smart Lock.",
+      "reauth_successful": "Token bijgewerkt.",
+      "reconfigure_successful": "Configuratie bijgewerkt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opties voor Nuki Pro",
+        "data": {
+          "scan_interval": "Polling-interval van de Web API",
+          "action_transport": "Kanaal voor slotacties",
+          "auth_entities": "Eén schakelaar per gebruiker of code"
+        },
+        "data_description": {
+          "scan_interval": "Laat leeg voor automatisch: 30 s, of 300 s zolang MQTT online is."
+        }
+      }
+    }
+  },
+  "selector": {
+    "action_transport": {
+      "options": {
+        "auto": "Automatisch (MQTT indien online, anders Web API)",
+        "mqtt": "Alleen MQTT (lokaal)",
+        "web": "Alleen Web API (cloud)"
+      }
+    },
+    "transport": {
+      "options": {
+        "auto": "Automatisch (MQTT indien online, anders Web API)",
+        "mqtt": "Alleen MQTT (lokaal)",
+        "web": "Alleen Web API (cloud)"
+      }
+    },
+    "lock_action": {
+      "options": {
+        "unlock": "Ontgrendelen",
+        "lock": "Vergrendelen",
+        "unlatch": "Openen",
+        "lock_n_go": "Lock 'n' Go",
+        "lock_n_go_unlatch": "Lock 'n' Go met openen",
+        "full_lock": "Volledig vergrendelen"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Maandag",
+        "tue": "Dinsdag",
+        "wed": "Woensdag",
+        "thu": "Donderdag",
+        "fri": "Vrijdag",
+        "sat": "Zaterdag",
+        "sun": "Zondag"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "locked": {
+        "name": "Vergrendeld"
+      },
+      "battery_critical": {
+        "name": "Batterij kritiek"
+      },
+      "tamper": {
+        "name": "Sabotage"
+      },
+      "night_mode": {
+        "name": "Nachtmodus actief"
+      },
+      "mqtt_connected": {
+        "name": "MQTT-verbinding"
+      },
+      "server_connected": {
+        "name": "Verbinding met Nuki-server"
+      },
+      "web_api_connected": {
+        "name": "Web API-verbinding"
+      }
+    },
+    "button": {
+      "lock_n_go": {
+        "name": "Lock 'n' Go"
+      },
+      "lock_n_go_unlatch": {
+        "name": "Lock 'n' Go met openen"
+      },
+      "full_lock": {
+        "name": "Volledig vergrendelen"
+      },
+      "refresh": {
+        "name": "Vernieuwen"
+      }
+    },
+    "event": {
+      "activity": {
+        "name": "Activiteit",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unlock": "Ontgrendeld",
+              "lock": "Vergrendeld",
+              "unlatch": "Geopend",
+              "lock_n_go": "Lock 'n' Go",
+              "lock_n_go_unlatch": "Lock 'n' Go met openen",
+              "full_lock": "Volledig vergrendeld",
+              "button_no_action": "Knop ingedrukt (geen actie ingesteld)",
+              "fob_no_action": "Fob ingedrukt (geen actie ingesteld)",
+              "wrong_code": "Verkeerde keypadcode",
+              "wrong_fingerprint": "Vingerafdruk geweigerd"
+            }
+          }
+        }
+      },
+      "door_events": {
+        "name": "Gebeurtenissen",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "door_opened": "Deur geopend",
+              "door_closed": "Deur gesloten",
+              "door_ajar_warning": "Deur opengelaten",
+              "door_status_mismatch": "Deurstatus komt niet overeen",
+              "door_sensor_jammed": "Deursensor vastgelopen"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "auto_lock_timeout": {
+        "name": "Vertraging automatisch vergrendelen"
+      }
+    },
+    "select": {
+      "single_button_press_action": {
+        "name": "Knop één keer indrukken",
+        "state": {
+          "no_action": "Geen actie",
+          "intelligent": "Intelligent",
+          "unlock": "Ontgrendelen",
+          "lock": "Vergrendelen",
+          "unlatch": "Openen",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Status tonen"
+        }
+      },
+      "double_button_press_action": {
+        "name": "Knop twee keer indrukken",
+        "state": {
+          "no_action": "Geen actie",
+          "intelligent": "Intelligent",
+          "unlock": "Ontgrendelen",
+          "lock": "Vergrendelen",
+          "unlatch": "Openen",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Status tonen"
+        }
+      },
+      "motor_speed": {
+        "name": "Motorsnelheid",
+        "state": {
+          "standard": "Standaard",
+          "fast": "Snel",
+          "slow": "Langzaam"
+        }
+      },
+      "lng_timeout": {
+        "name": "Vertraging Lock 'n' Go",
+        "state": {
+          "5": "5 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s",
+          "45": "45 s",
+          "60": "60 s"
+        }
+      },
+      "unlatch_duration": {
+        "name": "Openingsduur",
+        "state": {
+          "1": "1 s",
+          "3": "3 s",
+          "5": "5 s",
+          "7": "7 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s"
+        }
+      },
+      "fob_action_1": {
+        "name": "Eén keer drukken",
+        "state": {
+          "none": "Geen",
+          "unlock": "Ontgrendelen",
+          "lock": "Vergrendelen",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_2": {
+        "name": "Twee keer drukken",
+        "state": {
+          "none": "Geen",
+          "unlock": "Ontgrendelen",
+          "lock": "Vergrendelen",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_3": {
+        "name": "Drie keer drukken",
+        "state": {
+          "none": "Geen",
+          "unlock": "Ontgrendelen",
+          "lock": "Vergrendelen",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "advertising_mode": {
+        "name": "Bluetooth-uitzendmodus",
+        "state": {
+          "automatic": "Automatisch",
+          "normal": "Normaal",
+          "slow": "Langzaam",
+          "slowest": "Langzaamst"
+        }
+      },
+      "battery_type": {
+        "name": "Batterijtype",
+        "state": {
+          "alkali": "Alkaline",
+          "accumulator": "Oplaadbaar",
+          "lithium": "Lithium"
+        }
+      }
+    },
+    "sensor": {
+      "lock_state": {
+        "name": "Slotstatus",
+        "state": {
+          "uncalibrated": "Niet gekalibreerd",
+          "locked": "Vergrendeld",
+          "unlocking": "Ontgrendelen",
+          "unlocked": "Ontgrendeld",
+          "locking": "Vergrendelen",
+          "unlatched": "Geopend",
+          "unlocked_lock_n_go": "Ontgrendeld (Lock 'n' Go)",
+          "unlatching": "Openen",
+          "error_wrong_entry_code": "Verkeerde toegangscode",
+          "error_wrong_fingerprint": "Verkeerde vingerafdruk",
+          "motor_blocked": "Motor geblokkeerd",
+          "undefined": "Onbepaald"
+        }
+      },
+      "lock_mode": {
+        "name": "Modus",
+        "state": {
+          "uninitialized": "Niet geïnitialiseerd",
+          "pairing": "Koppelen",
+          "door": "Deurmodus",
+          "continuous": "Continue modus",
+          "maintenance": "Onderhoud",
+          "off_door_charging": "Opladen (niet op de deur)"
+        }
+      },
+      "door_state": {
+        "name": "Status",
+        "state": {
+          "unavailable": "Niet beschikbaar",
+          "deactivated": "Gedeactiveerd",
+          "closed": "Dicht",
+          "opened": "Open",
+          "unknown": "Onbekend",
+          "calibrating": "Kalibreren",
+          "uncalibrated": "Niet gekalibreerd",
+          "removed": "Verwijderd (sabotage)"
+        }
+      },
+      "door_security_state": {
+        "name": "Deurbeveiliging",
+        "state": {
+          "closed_and_locked": "Dicht en vergrendeld",
+          "closed_and_unlocked": "Dicht, niet vergrendeld",
+          "open": "Open"
+        }
+      },
+      "last_user": {
+        "name": "Laatste gebruiker",
+        "state_attributes": {
+          "action": {
+            "name": "Actie"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Bron"
+          },
+          "auth_id": {
+            "name": "Autorisatie-ID"
+          },
+          "timestamp": {
+            "name": "Tijdstempel"
+          },
+          "origin": {
+            "name": "Herkomst"
+          },
+          "presses": {
+            "name": "Aantal keer gedrukt"
+          }
+        }
+      },
+      "last_unlock_user": {
+        "name": "Laatst ontgrendeld door",
+        "state_attributes": {
+          "action": {
+            "name": "Actie"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Bron"
+          },
+          "auth_id": {
+            "name": "Autorisatie-ID"
+          },
+          "timestamp": {
+            "name": "Tijdstempel"
+          },
+          "origin": {
+            "name": "Herkomst"
+          },
+          "presses": {
+            "name": "Aantal keer gedrukt"
+          }
+        }
+      },
+      "last_unlatch_user": {
+        "name": "Laatst geopend door",
+        "state_attributes": {
+          "action": {
+            "name": "Actie"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Bron"
+          },
+          "auth_id": {
+            "name": "Autorisatie-ID"
+          },
+          "timestamp": {
+            "name": "Tijdstempel"
+          },
+          "origin": {
+            "name": "Herkomst"
+          },
+          "presses": {
+            "name": "Aantal keer gedrukt"
+          }
+        }
+      },
+      "last_lock_user": {
+        "name": "Laatst vergrendeld door",
+        "state_attributes": {
+          "action": {
+            "name": "Actie"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Bron"
+          },
+          "auth_id": {
+            "name": "Autorisatie-ID"
+          },
+          "timestamp": {
+            "name": "Tijdstempel"
+          },
+          "origin": {
+            "name": "Herkomst"
+          },
+          "presses": {
+            "name": "Aantal keer gedrukt"
+          }
+        }
+      },
+      "last_action": {
+        "name": "Laatste actie",
+        "state": {
+          "unlock": "Ontgrendeld",
+          "lock": "Vergrendeld",
+          "unlatch": "Geopend",
+          "lock_n_go": "Lock 'n' Go",
+          "lock_n_go_unlatch": "Lock 'n' Go met openen",
+          "full_lock": "Volledig vergrendeld"
+        },
+        "state_attributes": {
+          "action": {
+            "name": "Actie"
+          },
+          "trigger": {
+            "name": "Trigger"
+          },
+          "source": {
+            "name": "Bron"
+          },
+          "auth_id": {
+            "name": "Autorisatie-ID"
+          },
+          "timestamp": {
+            "name": "Tijdstempel"
+          },
+          "origin": {
+            "name": "Herkomst"
+          },
+          "presses": {
+            "name": "Aantal keer gedrukt"
+          }
+        }
+      },
+      "last_action_trigger": {
+        "name": "Trigger laatste actie",
+        "state": {
+          "system": "Systeem / Bluetooth",
+          "manual": "Handmatig",
+          "button": "Knop",
+          "automatic": "Automatisch",
+          "web": "Web",
+          "app": "App",
+          "auto_lock": "Automatisch vergrendelen",
+          "accessory": "Accessoire",
+          "keypad": "Keypad",
+          "keypad_error": "Keypadfout",
+          "nuki_mode": "Nuki-modus",
+          "homekit_matter": "HomeKit / Matter",
+          "mqtt": "MQTT"
+        }
+      },
+      "last_action_time": {
+        "name": "Tijdstip laatste actie"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "server_state": {
+        "name": "Status Nuki-server",
+        "state": {
+          "ok": "OK",
+          "unregistered": "Niet geregistreerd",
+          "auth_uuid_invalid": "Ongeldige autorisatie-UUID",
+          "auth_invalid": "Ongeldige autorisatie",
+          "offline": "Offline"
+        }
+      },
+      "keypad_mounting_state": {
+        "name": "Montage",
+        "state": {
+          "unknown": "Onbekend",
+          "mounted": "Gemonteerd",
+          "moved": "Verplaatst",
+          "error": "Fout (diefstaldetectie)"
+        }
+      }
+    },
+    "switch": {
+      "auto_lock": {
+        "name": "Automatisch vergrendelen"
+      },
+      "button_enabled": {
+        "name": "Knop ingeschakeld"
+      },
+      "led_enabled": {
+        "name": "LED ingeschakeld"
+      },
+      "auto_update": {
+        "name": "Automatische updates"
+      },
+      "slow_speed_night_mode": {
+        "name": "Lage snelheid in nachtmodus"
+      },
+      "pairing_enabled": {
+        "name": "Koppelen via knop"
+      },
+      "detached_cylinder": {
+        "name": "Losgekoppelde cilinder"
+      },
+      "lift_up_handle": {
+        "name": "Klink omhoog duwen"
+      },
+      "automatic_battery_type_detection": {
+        "name": "Batterijtype automatisch detecteren"
+      },
+      "authorization": {
+        "name": "Toegang {name}"
+      }
+    }
+  },
+  "exceptions": {
+    "web_api_required": {
+      "message": "Deze actie vereist het Nuki Web API-token."
+    },
+    "auth_failed": {
+      "message": "Het Nuki Web API-token is geweigerd; vernieuw het."
+    },
+    "web_api_error": {
+      "message": "Fout van de Nuki Web API: {error}"
+    },
+    "mqtt_unavailable": {
+      "message": "De MQTT-integratie is niet beschikbaar."
+    },
+    "mqtt_offline": {
+      "message": "Het slot is niet bereikbaar via MQTT."
+    },
+    "mqtt_no_response": {
+      "message": "Het slot heeft niet gereageerd op het MQTT-commando."
+    },
+    "mqtt_command_failed": {
+      "message": "Het slot heeft het commando geweigerd: {reason} (code {code})."
+    },
+    "settings_unknown": {
+      "message": "Instellingen nog niet geladen: wacht op de eerste gegevens van de Web API."
+    },
+    "authorization_not_found": {
+      "message": "Geen autorisatie met naam of ID \"{authorization}\"."
+    },
+    "authorization_ambiguous": {
+      "message": "Meerdere autorisaties heten \"{authorization}\": gebruik in plaats daarvan het ID."
+    },
+    "code_not_keypad": {
+      "message": "Alleen keypadcodes hebben een code."
+    },
+    "nothing_to_update": {
+      "message": "Niets om bij te werken."
+    }
+  },
+  "services": {
+    "lock_action": {
+      "name": "Slotactie",
+      "description": "Voert een Nuki-slotactie uit (Lock 'n' Go, volledig vergrendelen...).",
+      "fields": {
+        "action": {
+          "name": "Actie",
+          "description": "Uit te voeren actie."
+        },
+        "transport": {
+          "name": "Kanaal",
+          "description": "MQTT of Web API afdwingen; standaard automatisch."
+        }
+      }
+    },
+    "create_keypad_code": {
+      "name": "Keypadcode aanmaken",
+      "description": "Voegt een keypadcode toe, met optionele tijdsbeperkingen.",
+      "fields": {
+        "name": {
+          "name": "Naam",
+          "description": "Getoond in het logboek (max. 32 tekens)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "6 cijfers van 1 t/m 9, niet beginnend met 12."
+        },
+        "allowed_from_date": {
+          "name": "Geldig vanaf",
+          "description": "Eerste dag en tijdstip waarop de autorisatie werkt."
+        },
+        "allowed_until_date": {
+          "name": "Geldig tot",
+          "description": "Laatste dag en tijdstip waarop de autorisatie werkt."
+        },
+        "allowed_weekdays": {
+          "name": "Toegestane dagen",
+          "description": "Laat leeg voor elke dag."
+        },
+        "allowed_from_time": {
+          "name": "Dagelijkse begintijd",
+          "description": "Begin van het dagelijkse tijdvenster."
+        },
+        "allowed_until_time": {
+          "name": "Dagelijkse eindtijd",
+          "description": "Einde van het dagelijkse tijdvenster."
+        }
+      }
+    },
+    "update_authorization": {
+      "name": "Autorisatie bijwerken",
+      "description": "Hernoemt, schakelt in of uit, beperkt, of wijzigt de code van een gebruiker, fob of keypadcode.",
+      "fields": {
+        "authorization": {
+          "name": "Autorisatie",
+          "description": "Naam of ID (zie de attributen van de Toegang-schakelaars)."
+        },
+        "name": {
+          "name": "Nieuwe naam",
+          "description": "Nieuwe naam (max. 32 tekens)."
+        },
+        "enabled": {
+          "name": "Ingeschakeld",
+          "description": "Schakel de toegang in of uit."
+        },
+        "remote_allowed": {
+          "name": "Toegang op afstand",
+          "description": "Gebruik op afstand toestaan (app-gebruikers)."
+        },
+        "code": {
+          "name": "Nieuwe code",
+          "description": "6 cijfers van 1 t/m 9, niet beginnend met 12."
+        },
+        "allowed_from_date": {
+          "name": "Geldig vanaf",
+          "description": "Eerste dag en tijdstip waarop de autorisatie werkt."
+        },
+        "allowed_until_date": {
+          "name": "Geldig tot",
+          "description": "Laatste dag en tijdstip waarop de autorisatie werkt."
+        },
+        "allowed_weekdays": {
+          "name": "Toegestane dagen",
+          "description": "Laat leeg voor elke dag."
+        },
+        "allowed_from_time": {
+          "name": "Dagelijkse begintijd",
+          "description": "Begin van het dagelijkse tijdvenster."
+        },
+        "allowed_until_time": {
+          "name": "Dagelijkse eindtijd",
+          "description": "Einde van het dagelijkse tijdvenster."
+        }
+      }
+    },
+    "delete_authorization": {
+      "name": "Autorisatie verwijderen",
+      "description": "Verwijdert een gebruiker, fob of keypadcode.",
+      "fields": {
+        "authorization": {
+          "name": "Autorisatie",
+          "description": "Naam of ID."
+        }
+      }
+    },
+    "get_authorizations": {
+      "name": "Autorisaties opvragen",
+      "description": "Geeft gebruikers, fobs en keypadcodes terug (zonder de codes)."
+    },
+    "get_logs": {
+      "name": "Activiteitenlogboek opvragen",
+      "description": "Geeft de meest recente logboekvermeldingen van de Nuki Web API terug.",
+      "fields": {
+        "limit": {
+          "name": "Vermeldingen",
+          "description": "Aantal vermeldingen (1 t/m 50)."
+        }
+      }
+    }
+  }
+}

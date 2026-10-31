@@ -1,0 +1,743 @@
+{
+  "device": {
+    "door_sensor": {
+      "name": "{lock} sensore porta"
+    },
+    "keypad": {
+      "name": "{lock} Keypad"
+    },
+    "fob": {
+      "name": "{lock} Fob"
+    }
+  },
+  "issues": {
+    "mqtt_unavailable": {
+      "title": "Nuki Pro: MQTT non disponibile",
+      "description": "{name} è configurata per usare MQTT, ma l'integrazione MQTT non è disponibile. La serratura continua a funzionare tramite la Nuki Web API. Configura di nuovo MQTT oppure disattivalo con Riconfigura."
+    }
+  },
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Token Nuki Web API",
+        "description": "Crea un token API su {token_url} (menu API, genera token). Seleziona i permessi per visualizzare e gestire le Smart Lock, azionarle, gestire autorizzazioni e configurazione e visualizzare il registro attività.",
+        "data": {
+          "api_token": "Token API"
+        },
+        "data_description": {
+          "api_token": "Il token dà accesso al tuo account Nuki: tienilo segreto."
+        }
+      },
+      "select_lock": {
+        "title": "Scegli la serratura",
+        "data": {
+          "nuki_id": "Serratura"
+        }
+      },
+      "mqtt_setup": {
+        "title": "MQTT locale (facoltativo)",
+        "description": "MQTT è facoltativo e disattivato per impostazione predefinita: in tal caso tutto passa dalla Web API, interrogata ogni 30 s. Con MQTT lo stato arriva all'istante e le azioni sulla serratura restano nella tua rete; prima abilita MQTT nell'app Nuki indicando il tuo broker. Serratura trovata sul broker: {detected}",
+        "data": {
+          "use_mqtt": "Usa MQTT",
+          "mqtt_topic": "Argomento MQTT della serratura"
+        },
+        "data_description": {
+          "mqtt_topic": "Di solito nuki/{nuki_id}."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nuovo token Nuki Web API",
+        "description": "Il token di {name} è stato rifiutato. Creane uno nuovo su {token_url}.",
+        "data": {
+          "api_token": "Token API"
+        }
+      },
+      "reconfigure": {
+        "title": "Riconfigura {name}",
+        "description": "Lascia vuoto il token per mantenere quello attuale.",
+        "data": {
+          "api_token": "Token API",
+          "use_mqtt": "Usa MQTT",
+          "mqtt_topic": "Argomento MQTT della serratura"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Token rifiutato.",
+      "missing_scope": "Al token manca un permesso necessario.",
+      "cannot_connect": "Impossibile raggiungere la Nuki Web API.",
+      "unknown": "Errore imprevisto.",
+      "no_devices": "Nessuna Smart Lock su questo account.",
+      "lock_not_in_account": "Questa serratura non appartiene a questo account Nuki.",
+      "mqtt_no_data": "Nessun dato ricevuto su questo argomento: controlla MQTT nell'app Nuki o deseleziona MQTT.",
+      "mqtt_not_configured": "L'integrazione MQTT non è configurata."
+    },
+    "abort": {
+      "already_configured": "Questa serratura è già configurata.",
+      "invalid_discovery_info": "Messaggio di rilevamento MQTT non valido.",
+      "not_supported": "Questo dispositivo Nuki non è una Smart Lock.",
+      "reauth_successful": "Token aggiornato.",
+      "reconfigure_successful": "Configurazione aggiornata."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni Nuki Pro",
+        "data": {
+          "scan_interval": "Intervallo di interrogazione della Web API",
+          "action_transport": "Canale per le azioni della serratura",
+          "auth_entities": "Un interruttore per ogni utente o codice"
+        },
+        "data_description": {
+          "scan_interval": "Lascia vuoto per il valore automatico: 30 s, oppure 300 s quando MQTT è in linea."
+        }
+      }
+    }
+  },
+  "selector": {
+    "action_transport": {
+      "options": {
+        "auto": "Automatico (MQTT se in linea, altrimenti Web API)",
+        "mqtt": "Solo MQTT (locale)",
+        "web": "Solo Web API (cloud)"
+      }
+    },
+    "transport": {
+      "options": {
+        "auto": "Automatico (MQTT se in linea, altrimenti Web API)",
+        "mqtt": "Solo MQTT (locale)",
+        "web": "Solo Web API (cloud)"
+      }
+    },
+    "lock_action": {
+      "options": {
+        "unlock": "Sblocco",
+        "lock": "Blocco",
+        "unlatch": "Apertura",
+        "lock_n_go": "Lock 'n' Go",
+        "lock_n_go_unlatch": "Lock 'n' Go con apertura",
+        "full_lock": "Blocco completo"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Lunedì",
+        "tue": "Martedì",
+        "wed": "Mercoledì",
+        "thu": "Giovedì",
+        "fri": "Venerdì",
+        "sat": "Sabato",
+        "sun": "Domenica"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "locked": {
+        "name": "Bloccata"
+      },
+      "battery_critical": {
+        "name": "Batteria critica"
+      },
+      "tamper": {
+        "name": "Manomissione"
+      },
+      "night_mode": {
+        "name": "Modalità notte attiva"
+      },
+      "mqtt_connected": {
+        "name": "Connessione MQTT"
+      },
+      "server_connected": {
+        "name": "Connessione al server Nuki"
+      },
+      "web_api_connected": {
+        "name": "Connessione Web API"
+      }
+    },
+    "button": {
+      "lock_n_go": {
+        "name": "Lock 'n' Go"
+      },
+      "lock_n_go_unlatch": {
+        "name": "Lock 'n' Go con apertura"
+      },
+      "full_lock": {
+        "name": "Blocco completo"
+      },
+      "refresh": {
+        "name": "Aggiorna"
+      }
+    },
+    "event": {
+      "activity": {
+        "name": "Attività",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unlock": "Sblocco",
+              "lock": "Blocco",
+              "unlatch": "Apertura",
+              "lock_n_go": "Lock 'n' Go",
+              "lock_n_go_unlatch": "Lock 'n' Go con apertura",
+              "full_lock": "Blocco completo",
+              "button_no_action": "Pulsante premuto (nessuna azione impostata)",
+              "fob_no_action": "Fob premuto (nessuna azione impostata)",
+              "wrong_code": "Codice Keypad errato",
+              "wrong_fingerprint": "Impronta digitale rifiutata"
+            }
+          }
+        }
+      },
+      "door_events": {
+        "name": "Eventi",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "door_opened": "Porta aperta",
+              "door_closed": "Porta chiusa",
+              "door_ajar_warning": "Porta lasciata aperta",
+              "door_status_mismatch": "Stato della porta incoerente",
+              "door_sensor_jammed": "Sensore porta inceppato"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "auto_lock_timeout": {
+        "name": "Ritardo del blocco automatico"
+      }
+    },
+    "select": {
+      "single_button_press_action": {
+        "name": "Pressione singola del pulsante",
+        "state": {
+          "no_action": "Nessuna azione",
+          "intelligent": "Intelligente",
+          "unlock": "Sblocca",
+          "lock": "Blocca",
+          "unlatch": "Apri",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Mostra stato"
+        }
+      },
+      "double_button_press_action": {
+        "name": "Doppia pressione del pulsante",
+        "state": {
+          "no_action": "Nessuna azione",
+          "intelligent": "Intelligente",
+          "unlock": "Sblocca",
+          "lock": "Blocca",
+          "unlatch": "Apri",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Mostra stato"
+        }
+      },
+      "motor_speed": {
+        "name": "Velocità del motore",
+        "state": {
+          "standard": "Standard",
+          "fast": "Veloce",
+          "slow": "Lenta"
+        }
+      },
+      "lng_timeout": {
+        "name": "Ritardo Lock 'n' Go",
+        "state": {
+          "5": "5 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s",
+          "45": "45 s",
+          "60": "60 s"
+        }
+      },
+      "unlatch_duration": {
+        "name": "Durata dell'apertura",
+        "state": {
+          "1": "1 s",
+          "3": "3 s",
+          "5": "5 s",
+          "7": "7 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s"
+        }
+      },
+      "fob_action_1": {
+        "name": "Pressione singola",
+        "state": {
+          "none": "Nessuna",
+          "unlock": "Sblocca",
+          "lock": "Blocca",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligente"
+        }
+      },
+      "fob_action_2": {
+        "name": "Doppia pressione",
+        "state": {
+          "none": "Nessuna",
+          "unlock": "Sblocca",
+          "lock": "Blocca",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligente"
+        }
+      },
+      "fob_action_3": {
+        "name": "Tripla pressione",
+        "state": {
+          "none": "Nessuna",
+          "unlock": "Sblocca",
+          "lock": "Blocca",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligente"
+        }
+      },
+      "advertising_mode": {
+        "name": "Modalità di advertising Bluetooth",
+        "state": {
+          "automatic": "Automatica",
+          "normal": "Normale",
+          "slow": "Lenta",
+          "slowest": "Molto lenta"
+        }
+      },
+      "battery_type": {
+        "name": "Tipo di batterie",
+        "state": {
+          "alkali": "Alcaline",
+          "accumulator": "Ricaricabili",
+          "lithium": "Litio"
+        }
+      }
+    },
+    "sensor": {
+      "lock_state": {
+        "name": "Stato della serratura",
+        "state": {
+          "uncalibrated": "Non calibrata",
+          "locked": "Bloccata",
+          "unlocking": "Sblocco in corso",
+          "unlocked": "Sbloccata",
+          "locking": "Blocco in corso",
+          "unlatched": "Aperta",
+          "unlocked_lock_n_go": "Sbloccata (Lock 'n' Go)",
+          "unlatching": "Apertura in corso",
+          "error_wrong_entry_code": "Codice di accesso errato",
+          "error_wrong_fingerprint": "Impronta digitale errata",
+          "motor_blocked": "Motore bloccato",
+          "undefined": "Indefinito"
+        }
+      },
+      "lock_mode": {
+        "name": "Modalità",
+        "state": {
+          "uninitialized": "Non inizializzata",
+          "pairing": "Abbinamento",
+          "door": "Modalità porta",
+          "continuous": "Modalità continua",
+          "maintenance": "Manutenzione",
+          "off_door_charging": "In carica fuori dalla porta"
+        }
+      },
+      "door_state": {
+        "name": "Stato",
+        "state": {
+          "unavailable": "Non disponibile",
+          "deactivated": "Disattivato",
+          "closed": "Chiusa",
+          "opened": "Aperta",
+          "unknown": "Sconosciuto",
+          "calibrating": "Calibrazione in corso",
+          "uncalibrated": "Non calibrato",
+          "removed": "Rimosso (manomissione)"
+        }
+      },
+      "door_security_state": {
+        "name": "Sicurezza della porta",
+        "state": {
+          "closed_and_locked": "Chiusa e bloccata",
+          "closed_and_unlocked": "Chiusa, non bloccata",
+          "open": "Aperta"
+        }
+      },
+      "last_user": {
+        "name": "Ultimo utente",
+        "state_attributes": {
+          "action": {
+            "name": "Azione"
+          },
+          "trigger": {
+            "name": "Attivazione"
+          },
+          "source": {
+            "name": "Fonte"
+          },
+          "auth_id": {
+            "name": "ID autorizzazione"
+          },
+          "timestamp": {
+            "name": "Marca temporale"
+          },
+          "origin": {
+            "name": "Origine"
+          },
+          "presses": {
+            "name": "Pressioni"
+          }
+        }
+      },
+      "last_unlock_user": {
+        "name": "Ultimo sblocco da",
+        "state_attributes": {
+          "action": {
+            "name": "Azione"
+          },
+          "trigger": {
+            "name": "Attivazione"
+          },
+          "source": {
+            "name": "Fonte"
+          },
+          "auth_id": {
+            "name": "ID autorizzazione"
+          },
+          "timestamp": {
+            "name": "Marca temporale"
+          },
+          "origin": {
+            "name": "Origine"
+          },
+          "presses": {
+            "name": "Pressioni"
+          }
+        }
+      },
+      "last_unlatch_user": {
+        "name": "Ultima apertura da",
+        "state_attributes": {
+          "action": {
+            "name": "Azione"
+          },
+          "trigger": {
+            "name": "Attivazione"
+          },
+          "source": {
+            "name": "Fonte"
+          },
+          "auth_id": {
+            "name": "ID autorizzazione"
+          },
+          "timestamp": {
+            "name": "Marca temporale"
+          },
+          "origin": {
+            "name": "Origine"
+          },
+          "presses": {
+            "name": "Pressioni"
+          }
+        }
+      },
+      "last_lock_user": {
+        "name": "Ultimo blocco da",
+        "state_attributes": {
+          "action": {
+            "name": "Azione"
+          },
+          "trigger": {
+            "name": "Attivazione"
+          },
+          "source": {
+            "name": "Fonte"
+          },
+          "auth_id": {
+            "name": "ID autorizzazione"
+          },
+          "timestamp": {
+            "name": "Marca temporale"
+          },
+          "origin": {
+            "name": "Origine"
+          },
+          "presses": {
+            "name": "Pressioni"
+          }
+        }
+      },
+      "last_action": {
+        "name": "Ultima azione",
+        "state": {
+          "unlock": "Sblocco",
+          "lock": "Blocco",
+          "unlatch": "Apertura",
+          "lock_n_go": "Lock 'n' Go",
+          "lock_n_go_unlatch": "Lock 'n' Go con apertura",
+          "full_lock": "Blocco completo"
+        },
+        "state_attributes": {
+          "action": {
+            "name": "Azione"
+          },
+          "trigger": {
+            "name": "Attivazione"
+          },
+          "source": {
+            "name": "Fonte"
+          },
+          "auth_id": {
+            "name": "ID autorizzazione"
+          },
+          "timestamp": {
+            "name": "Marca temporale"
+          },
+          "origin": {
+            "name": "Origine"
+          },
+          "presses": {
+            "name": "Pressioni"
+          }
+        }
+      },
+      "last_action_trigger": {
+        "name": "Attivazione dell'ultima azione",
+        "state": {
+          "system": "Sistema / Bluetooth",
+          "manual": "Manuale",
+          "button": "Pulsante",
+          "automatic": "Automatico",
+          "web": "Web",
+          "app": "App",
+          "auto_lock": "Blocco automatico",
+          "accessory": "Accessorio",
+          "keypad": "Keypad",
+          "keypad_error": "Errore Keypad",
+          "nuki_mode": "Modalità Nuki",
+          "homekit_matter": "HomeKit / Matter",
+          "mqtt": "MQTT"
+        }
+      },
+      "last_action_time": {
+        "name": "Ora dell'ultima azione"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "server_state": {
+        "name": "Stato del server Nuki",
+        "state": {
+          "ok": "OK",
+          "unregistered": "Non registrata",
+          "auth_uuid_invalid": "UUID di autorizzazione non valido",
+          "auth_invalid": "Autorizzazione non valida",
+          "offline": "Non in linea"
+        }
+      },
+      "keypad_mounting_state": {
+        "name": "Montaggio",
+        "state": {
+          "unknown": "Sconosciuto",
+          "mounted": "Montato",
+          "moved": "Spostato",
+          "error": "Errore (antifurto)"
+        }
+      }
+    },
+    "switch": {
+      "auto_lock": {
+        "name": "Blocco automatico"
+      },
+      "button_enabled": {
+        "name": "Pulsante abilitato"
+      },
+      "led_enabled": {
+        "name": "LED abilitato"
+      },
+      "auto_update": {
+        "name": "Aggiornamenti automatici"
+      },
+      "slow_speed_night_mode": {
+        "name": "Velocità lenta in modalità notte"
+      },
+      "pairing_enabled": {
+        "name": "Abbinamento tramite pulsante"
+      },
+      "detached_cylinder": {
+        "name": "Cilindro disaccoppiato"
+      },
+      "lift_up_handle": {
+        "name": "Maniglia da sollevare"
+      },
+      "automatic_battery_type_detection": {
+        "name": "Rilevamento automatico del tipo di batterie"
+      },
+      "authorization": {
+        "name": "Accesso {name}"
+      }
+    }
+  },
+  "exceptions": {
+    "web_api_required": {
+      "message": "Questa azione richiede il token Nuki Web API."
+    },
+    "auth_failed": {
+      "message": "Il token Nuki Web API è stato rifiutato; rinnovalo."
+    },
+    "web_api_error": {
+      "message": "Errore della Nuki Web API: {error}"
+    },
+    "mqtt_unavailable": {
+      "message": "L'integrazione MQTT non è disponibile."
+    },
+    "mqtt_offline": {
+      "message": "La serratura non è raggiungibile tramite MQTT."
+    },
+    "mqtt_no_response": {
+      "message": "La serratura non ha risposto al comando MQTT."
+    },
+    "mqtt_command_failed": {
+      "message": "La serratura ha rifiutato il comando: {reason} (codice {code})."
+    },
+    "settings_unknown": {
+      "message": "Impostazioni non ancora caricate: attendi la prima lettura dalla Web API."
+    },
+    "authorization_not_found": {
+      "message": "Nessuna autorizzazione con nome o ID \"{authorization}\"."
+    },
+    "authorization_ambiguous": {
+      "message": "Più autorizzazioni si chiamano \"{authorization}\": usa invece l'ID."
+    },
+    "code_not_keypad": {
+      "message": "Solo i codici Keypad hanno un codice."
+    },
+    "nothing_to_update": {
+      "message": "Nulla da aggiornare."
+    }
+  },
+  "services": {
+    "lock_action": {
+      "name": "Azione della serratura",
+      "description": "Esegue un'azione della serratura Nuki (Lock 'n' Go, blocco completo...).",
+      "fields": {
+        "action": {
+          "name": "Azione",
+          "description": "Azione da eseguire."
+        },
+        "transport": {
+          "name": "Canale",
+          "description": "Forza MQTT o Web API; automatico per impostazione predefinita."
+        }
+      }
+    },
+    "create_keypad_code": {
+      "name": "Crea codice Keypad",
+      "description": "Aggiunge un codice Keypad, con limiti di tempo facoltativi.",
+      "fields": {
+        "name": {
+          "name": "Nome",
+          "description": "Mostrato nel registro (max 32 caratteri)."
+        },
+        "code": {
+          "name": "Codice",
+          "description": "6 cifre da 1 a 9, non deve iniziare con 12."
+        },
+        "allowed_from_date": {
+          "name": "Inizio validità",
+          "description": "Data e ora da cui l'autorizzazione è valida."
+        },
+        "allowed_until_date": {
+          "name": "Fine validità",
+          "description": "Data e ora fino a cui l'autorizzazione è valida."
+        },
+        "allowed_weekdays": {
+          "name": "Giorni consentiti",
+          "description": "Lascia vuoto per tutti i giorni."
+        },
+        "allowed_from_time": {
+          "name": "Ora di inizio giornaliera",
+          "description": "Inizio della fascia oraria giornaliera."
+        },
+        "allowed_until_time": {
+          "name": "Ora di fine giornaliera",
+          "description": "Fine della fascia oraria giornaliera."
+        }
+      }
+    },
+    "update_authorization": {
+      "name": "Modifica autorizzazione",
+      "description": "Rinomina, abilita o disabilita, limita o cambia il codice di un utente, di un Fob o di un codice Keypad.",
+      "fields": {
+        "authorization": {
+          "name": "Autorizzazione",
+          "description": "Nome o ID (vedi gli attributi degli interruttori Accesso)."
+        },
+        "name": {
+          "name": "Nuovo nome",
+          "description": "Nuovo nome (max 32 caratteri)."
+        },
+        "enabled": {
+          "name": "Abilitata",
+          "description": "Abilita o disabilita l'accesso."
+        },
+        "remote_allowed": {
+          "name": "Accesso remoto",
+          "description": "Consenti l'uso da remoto (utenti dell'app)."
+        },
+        "code": {
+          "name": "Nuovo codice",
+          "description": "6 cifre da 1 a 9, non deve iniziare con 12."
+        },
+        "allowed_from_date": {
+          "name": "Inizio validità",
+          "description": "Data e ora da cui l'autorizzazione è valida."
+        },
+        "allowed_until_date": {
+          "name": "Fine validità",
+          "description": "Data e ora fino a cui l'autorizzazione è valida."
+        },
+        "allowed_weekdays": {
+          "name": "Giorni consentiti",
+          "description": "Lascia vuoto per tutti i giorni."
+        },
+        "allowed_from_time": {
+          "name": "Ora di inizio giornaliera",
+          "description": "Inizio della fascia oraria giornaliera."
+        },
+        "allowed_until_time": {
+          "name": "Ora di fine giornaliera",
+          "description": "Fine della fascia oraria giornaliera."
+        }
+      }
+    },
+    "delete_authorization": {
+      "name": "Elimina autorizzazione",
+      "description": "Elimina un utente, un Fob o un codice Keypad.",
+      "fields": {
+        "authorization": {
+          "name": "Autorizzazione",
+          "description": "Nome o ID."
+        }
+      }
+    },
+    "get_authorizations": {
+      "name": "Elenca le autorizzazioni",
+      "description": "Restituisce utenti, Fob e codici Keypad (senza i codici)."
+    },
+    "get_logs": {
+      "name": "Leggi il registro attività",
+      "description": "Restituisce le ultime voci del registro attività dalla Nuki Web API.",
+      "fields": {
+        "limit": {
+          "name": "Voci",
+          "description": "Numero di voci (da 1 a 50)."
+        }
+      }
+    }
+  }
+}

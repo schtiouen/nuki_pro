@@ -1,0 +1,743 @@
+{
+  "device": {
+    "door_sensor": {
+      "name": "{lock} Türsensor"
+    },
+    "keypad": {
+      "name": "{lock} Keypad"
+    },
+    "fob": {
+      "name": "{lock} Fob"
+    }
+  },
+  "issues": {
+    "mqtt_unavailable": {
+      "title": "Nuki Pro: MQTT nicht verfügbar",
+      "description": "{name} ist für MQTT eingerichtet, aber die MQTT-Integration ist nicht verfügbar. Das Schloss funktioniert weiterhin über die Nuki Web API. Richte MQTT erneut ein oder deaktiviere MQTT über „Neu konfigurieren“."
+    }
+  },
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Token für die Nuki Web API",
+        "description": "Erstelle ein API-Token auf {token_url} (Menü „API“, Token generieren). Aktiviere die Zugriffsrechte, um die Smart Locks anzuzeigen, zu verwalten und zu bedienen, Berechtigungen und Konfiguration zu verwalten sowie das Aktivitätsprotokoll anzuzeigen.",
+        "data": {
+          "api_token": "API-Token"
+        },
+        "data_description": {
+          "api_token": "Das Token gewährt Zugriff auf dein Nuki-Konto – halte es geheim."
+        }
+      },
+      "select_lock": {
+        "title": "Schloss auswählen",
+        "data": {
+          "nuki_id": "Schloss"
+        }
+      },
+      "mqtt_setup": {
+        "title": "Lokales MQTT (optional)",
+        "description": "MQTT ist optional und standardmäßig deaktiviert: Dann läuft alles über die Web API, die alle 30 s abgefragt wird. Mit MQTT wird der Zustand sofort übermittelt und Schlossaktionen bleiben in deinem Netzwerk; richte dafür zuerst MQTT mit deinem Broker in der Nuki-App ein. Auf dem Broker gefundenes Schloss: {detected}",
+        "data": {
+          "use_mqtt": "MQTT verwenden",
+          "mqtt_topic": "Topic des Schlosses"
+        },
+        "data_description": {
+          "mqtt_topic": "Normalerweise nuki/{nuki_id}."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Neues Token für die Nuki Web API",
+        "description": "Das Token für {name} wurde abgelehnt. Erstelle ein neues auf {token_url}.",
+        "data": {
+          "api_token": "API-Token"
+        }
+      },
+      "reconfigure": {
+        "title": "{name} neu konfigurieren",
+        "description": "Lass das Token leer, um das aktuelle zu behalten.",
+        "data": {
+          "api_token": "API-Token",
+          "use_mqtt": "MQTT verwenden",
+          "mqtt_topic": "Topic des Schlosses"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Token abgelehnt.",
+      "missing_scope": "Dem Token fehlt ein erforderliches Zugriffsrecht.",
+      "cannot_connect": "Die Nuki Web API ist nicht erreichbar.",
+      "unknown": "Unerwarteter Fehler.",
+      "no_devices": "Kein Smart Lock in diesem Konto.",
+      "lock_not_in_account": "Dieses Schloss gehört nicht zu diesem Nuki-Konto.",
+      "mqtt_no_data": "In diesem Topic wurde nichts empfangen: Prüfe MQTT in der Nuki-App oder deaktiviere MQTT.",
+      "mqtt_not_configured": "Die MQTT-Integration ist nicht eingerichtet."
+    },
+    "abort": {
+      "already_configured": "Dieses Schloss ist bereits konfiguriert.",
+      "invalid_discovery_info": "Ungültige MQTT-Discovery-Nachricht.",
+      "not_supported": "Dieses Nuki-Gerät ist kein Smart Lock.",
+      "reauth_successful": "Token aktualisiert.",
+      "reconfigure_successful": "Konfiguration aktualisiert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Optionen für Nuki Pro",
+        "data": {
+          "scan_interval": "Abfrageintervall der Web API",
+          "action_transport": "Kanal für Schlossaktionen",
+          "auth_entities": "Ein Schalter pro Benutzer oder Code"
+        },
+        "data_description": {
+          "scan_interval": "Leer lassen für den automatischen Wert: 30 s bzw. 300 s, solange MQTT online ist."
+        }
+      }
+    }
+  },
+  "selector": {
+    "action_transport": {
+      "options": {
+        "auto": "Automatisch (MQTT, wenn online, sonst Web API)",
+        "mqtt": "Nur MQTT (lokal)",
+        "web": "Nur Web API (Cloud)"
+      }
+    },
+    "transport": {
+      "options": {
+        "auto": "Automatisch (MQTT, wenn online, sonst Web API)",
+        "mqtt": "Nur MQTT (lokal)",
+        "web": "Nur Web API (Cloud)"
+      }
+    },
+    "lock_action": {
+      "options": {
+        "unlock": "Entriegeln",
+        "lock": "Verriegeln",
+        "unlatch": "Öffnen",
+        "lock_n_go": "Lock 'n' Go",
+        "lock_n_go_unlatch": "Lock 'n' Go mit Öffnen",
+        "full_lock": "Vollständig verriegeln"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Montag",
+        "tue": "Dienstag",
+        "wed": "Mittwoch",
+        "thu": "Donnerstag",
+        "fri": "Freitag",
+        "sat": "Samstag",
+        "sun": "Sonntag"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "locked": {
+        "name": "Verriegelt"
+      },
+      "battery_critical": {
+        "name": "Batterie kritisch"
+      },
+      "tamper": {
+        "name": "Manipulation"
+      },
+      "night_mode": {
+        "name": "Nachtmodus aktiv"
+      },
+      "mqtt_connected": {
+        "name": "MQTT-Verbindung"
+      },
+      "server_connected": {
+        "name": "Verbindung zum Nuki-Server"
+      },
+      "web_api_connected": {
+        "name": "Verbindung zur Web API"
+      }
+    },
+    "button": {
+      "lock_n_go": {
+        "name": "Lock 'n' Go"
+      },
+      "lock_n_go_unlatch": {
+        "name": "Lock 'n' Go mit Öffnen"
+      },
+      "full_lock": {
+        "name": "Vollständig verriegeln"
+      },
+      "refresh": {
+        "name": "Aktualisieren"
+      }
+    },
+    "event": {
+      "activity": {
+        "name": "Aktivität",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "unlock": "Entriegeln",
+              "lock": "Verriegeln",
+              "unlatch": "Öffnen",
+              "lock_n_go": "Lock 'n' Go",
+              "lock_n_go_unlatch": "Lock 'n' Go mit Öffnen",
+              "full_lock": "Vollständig verriegeln",
+              "button_no_action": "Taste gedrückt (keine Aktion festgelegt)",
+              "fob_no_action": "Fob gedrückt (keine Aktion festgelegt)",
+              "wrong_code": "Falscher Keypad-Code",
+              "wrong_fingerprint": "Fingerabdruck abgelehnt"
+            }
+          }
+        }
+      },
+      "door_events": {
+        "name": "Ereignisse",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "door_opened": "Tür geöffnet",
+              "door_closed": "Tür geschlossen",
+              "door_ajar_warning": "Tür offen gelassen",
+              "door_status_mismatch": "Türstatus widersprüchlich",
+              "door_sensor_jammed": "Türsensor blockiert"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "auto_lock_timeout": {
+        "name": "Wartezeit für automatische Verriegelung"
+      }
+    },
+    "select": {
+      "single_button_press_action": {
+        "name": "Einfacher Tastendruck",
+        "state": {
+          "no_action": "Keine Aktion",
+          "intelligent": "Intelligent",
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "unlatch": "Öffnen",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Status anzeigen"
+        }
+      },
+      "double_button_press_action": {
+        "name": "Doppelter Tastendruck",
+        "state": {
+          "no_action": "Keine Aktion",
+          "intelligent": "Intelligent",
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "unlatch": "Öffnen",
+          "lock_n_go": "Lock 'n' Go",
+          "show_status": "Status anzeigen"
+        }
+      },
+      "motor_speed": {
+        "name": "Motorgeschwindigkeit",
+        "state": {
+          "standard": "Standard",
+          "fast": "Schnell",
+          "slow": "Langsam"
+        }
+      },
+      "lng_timeout": {
+        "name": "Wartezeit für Lock 'n' Go",
+        "state": {
+          "5": "5 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s",
+          "45": "45 s",
+          "60": "60 s"
+        }
+      },
+      "unlatch_duration": {
+        "name": "Öffnungsdauer",
+        "state": {
+          "1": "1 s",
+          "3": "3 s",
+          "5": "5 s",
+          "7": "7 s",
+          "10": "10 s",
+          "15": "15 s",
+          "20": "20 s",
+          "30": "30 s"
+        }
+      },
+      "fob_action_1": {
+        "name": "Einfaches Drücken",
+        "state": {
+          "none": "Keine",
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_2": {
+        "name": "Doppeltes Drücken",
+        "state": {
+          "none": "Keine",
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "fob_action_3": {
+        "name": "Dreifaches Drücken",
+        "state": {
+          "none": "Keine",
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "lock_n_go": "Lock 'n' Go",
+          "intelligent": "Intelligent"
+        }
+      },
+      "advertising_mode": {
+        "name": "Bluetooth-Advertising-Modus",
+        "state": {
+          "automatic": "Automatisch",
+          "normal": "Normal",
+          "slow": "Langsam",
+          "slowest": "Sehr langsam"
+        }
+      },
+      "battery_type": {
+        "name": "Batterietyp",
+        "state": {
+          "alkali": "Alkaline",
+          "accumulator": "Akku",
+          "lithium": "Lithium"
+        }
+      }
+    },
+    "sensor": {
+      "lock_state": {
+        "name": "Schlosszustand",
+        "state": {
+          "uncalibrated": "Nicht kalibriert",
+          "locked": "Verriegelt",
+          "unlocking": "Wird entriegelt",
+          "unlocked": "Entriegelt",
+          "locking": "Wird verriegelt",
+          "unlatched": "Geöffnet",
+          "unlocked_lock_n_go": "Entriegelt (Lock 'n' Go)",
+          "unlatching": "Wird geöffnet",
+          "error_wrong_entry_code": "Falscher Zugangscode",
+          "error_wrong_fingerprint": "Falscher Fingerabdruck",
+          "motor_blocked": "Motor blockiert",
+          "undefined": "Undefiniert"
+        }
+      },
+      "lock_mode": {
+        "name": "Modus",
+        "state": {
+          "uninitialized": "Nicht initialisiert",
+          "pairing": "Kopplung",
+          "door": "Türmodus",
+          "continuous": "Dauermodus",
+          "maintenance": "Wartung",
+          "off_door_charging": "Laden außerhalb der Tür"
+        }
+      },
+      "door_state": {
+        "name": "Zustand",
+        "state": {
+          "unavailable": "Nicht verfügbar",
+          "deactivated": "Deaktiviert",
+          "closed": "Geschlossen",
+          "opened": "Geöffnet",
+          "unknown": "Unbekannt",
+          "calibrating": "Wird kalibriert",
+          "uncalibrated": "Nicht kalibriert",
+          "removed": "Entfernt (Manipulation)"
+        }
+      },
+      "door_security_state": {
+        "name": "Türsicherheit",
+        "state": {
+          "closed_and_locked": "Geschlossen und verriegelt",
+          "closed_and_unlocked": "Geschlossen, nicht verriegelt",
+          "open": "Geöffnet"
+        }
+      },
+      "last_user": {
+        "name": "Letzter Benutzer",
+        "state_attributes": {
+          "action": {
+            "name": "Aktion"
+          },
+          "trigger": {
+            "name": "Auslöser"
+          },
+          "source": {
+            "name": "Quelle"
+          },
+          "auth_id": {
+            "name": "Berechtigungs-ID"
+          },
+          "timestamp": {
+            "name": "Zeitstempel"
+          },
+          "origin": {
+            "name": "Herkunft"
+          },
+          "presses": {
+            "name": "Tastendrücke"
+          }
+        }
+      },
+      "last_unlock_user": {
+        "name": "Zuletzt entriegelt von",
+        "state_attributes": {
+          "action": {
+            "name": "Aktion"
+          },
+          "trigger": {
+            "name": "Auslöser"
+          },
+          "source": {
+            "name": "Quelle"
+          },
+          "auth_id": {
+            "name": "Berechtigungs-ID"
+          },
+          "timestamp": {
+            "name": "Zeitstempel"
+          },
+          "origin": {
+            "name": "Herkunft"
+          },
+          "presses": {
+            "name": "Tastendrücke"
+          }
+        }
+      },
+      "last_unlatch_user": {
+        "name": "Zuletzt geöffnet von",
+        "state_attributes": {
+          "action": {
+            "name": "Aktion"
+          },
+          "trigger": {
+            "name": "Auslöser"
+          },
+          "source": {
+            "name": "Quelle"
+          },
+          "auth_id": {
+            "name": "Berechtigungs-ID"
+          },
+          "timestamp": {
+            "name": "Zeitstempel"
+          },
+          "origin": {
+            "name": "Herkunft"
+          },
+          "presses": {
+            "name": "Tastendrücke"
+          }
+        }
+      },
+      "last_lock_user": {
+        "name": "Zuletzt verriegelt von",
+        "state_attributes": {
+          "action": {
+            "name": "Aktion"
+          },
+          "trigger": {
+            "name": "Auslöser"
+          },
+          "source": {
+            "name": "Quelle"
+          },
+          "auth_id": {
+            "name": "Berechtigungs-ID"
+          },
+          "timestamp": {
+            "name": "Zeitstempel"
+          },
+          "origin": {
+            "name": "Herkunft"
+          },
+          "presses": {
+            "name": "Tastendrücke"
+          }
+        }
+      },
+      "last_action": {
+        "name": "Letzte Aktion",
+        "state": {
+          "unlock": "Entriegeln",
+          "lock": "Verriegeln",
+          "unlatch": "Öffnen",
+          "lock_n_go": "Lock 'n' Go",
+          "lock_n_go_unlatch": "Lock 'n' Go mit Öffnen",
+          "full_lock": "Vollständig verriegeln"
+        },
+        "state_attributes": {
+          "action": {
+            "name": "Aktion"
+          },
+          "trigger": {
+            "name": "Auslöser"
+          },
+          "source": {
+            "name": "Quelle"
+          },
+          "auth_id": {
+            "name": "Berechtigungs-ID"
+          },
+          "timestamp": {
+            "name": "Zeitstempel"
+          },
+          "origin": {
+            "name": "Herkunft"
+          },
+          "presses": {
+            "name": "Tastendrücke"
+          }
+        }
+      },
+      "last_action_trigger": {
+        "name": "Auslöser der letzten Aktion",
+        "state": {
+          "system": "System / Bluetooth",
+          "manual": "Manuell",
+          "button": "Taste",
+          "automatic": "Automatisch",
+          "web": "Web",
+          "app": "App",
+          "auto_lock": "Automatische Verriegelung",
+          "accessory": "Zubehör",
+          "keypad": "Keypad",
+          "keypad_error": "Keypad-Fehler",
+          "nuki_mode": "Nuki-Modus",
+          "homekit_matter": "HomeKit / Matter",
+          "mqtt": "MQTT"
+        }
+      },
+      "last_action_time": {
+        "name": "Zeitpunkt der letzten Aktion"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "server_state": {
+        "name": "Status des Nuki-Servers",
+        "state": {
+          "ok": "OK",
+          "unregistered": "Nicht registriert",
+          "auth_uuid_invalid": "Ungültige Autorisierungs-UUID",
+          "auth_invalid": "Ungültige Autorisierung",
+          "offline": "Offline"
+        }
+      },
+      "keypad_mounting_state": {
+        "name": "Montage",
+        "state": {
+          "unknown": "Unbekannt",
+          "mounted": "Montiert",
+          "moved": "Bewegt",
+          "error": "Fehler (Diebstahlerkennung)"
+        }
+      }
+    },
+    "switch": {
+      "auto_lock": {
+        "name": "Automatische Verriegelung"
+      },
+      "button_enabled": {
+        "name": "Taste aktiviert"
+      },
+      "led_enabled": {
+        "name": "LED aktiviert"
+      },
+      "auto_update": {
+        "name": "Automatische Updates"
+      },
+      "slow_speed_night_mode": {
+        "name": "Langsame Geschwindigkeit im Nachtmodus"
+      },
+      "pairing_enabled": {
+        "name": "Kopplung per Taste"
+      },
+      "detached_cylinder": {
+        "name": "Entkoppelter Zylinder"
+      },
+      "lift_up_handle": {
+        "name": "Türgriff zum Anheben"
+      },
+      "automatic_battery_type_detection": {
+        "name": "Automatische Erkennung des Batterietyps"
+      },
+      "authorization": {
+        "name": "Zugang {name}"
+      }
+    }
+  },
+  "exceptions": {
+    "web_api_required": {
+      "message": "Diese Aktion erfordert das Token für die Nuki Web API."
+    },
+    "auth_failed": {
+      "message": "Das Token für die Nuki Web API wurde abgelehnt; erneuere es."
+    },
+    "web_api_error": {
+      "message": "Fehler der Nuki Web API: {error}"
+    },
+    "mqtt_unavailable": {
+      "message": "Die MQTT-Integration ist nicht verfügbar."
+    },
+    "mqtt_offline": {
+      "message": "Das Schloss ist über MQTT nicht erreichbar."
+    },
+    "mqtt_no_response": {
+      "message": "Das Schloss hat nicht auf den MQTT-Befehl geantwortet."
+    },
+    "mqtt_command_failed": {
+      "message": "Das Schloss hat den Befehl abgelehnt: {reason} (Code {code})."
+    },
+    "settings_unknown": {
+      "message": "Einstellungen noch nicht geladen: Warte auf den ersten Abruf über die Web API."
+    },
+    "authorization_not_found": {
+      "message": "Keine Berechtigung mit dem Namen oder der ID „{authorization}“."
+    },
+    "authorization_ambiguous": {
+      "message": "Mehrere Berechtigungen heißen „{authorization}“: Verwende stattdessen die ID."
+    },
+    "code_not_keypad": {
+      "message": "Nur Keypad-Codes haben einen Code."
+    },
+    "nothing_to_update": {
+      "message": "Nichts zu aktualisieren."
+    }
+  },
+  "services": {
+    "lock_action": {
+      "name": "Schlossaktion",
+      "description": "Führt eine Nuki-Schlossaktion aus (Lock 'n' Go, vollständig verriegeln …).",
+      "fields": {
+        "action": {
+          "name": "Aktion",
+          "description": "Auszuführende Aktion."
+        },
+        "transport": {
+          "name": "Kanal",
+          "description": "MQTT oder Web API erzwingen; standardmäßig automatisch."
+        }
+      }
+    },
+    "create_keypad_code": {
+      "name": "Keypad-Code erstellen",
+      "description": "Fügt einen Keypad-Code hinzu, optional mit zeitlichen Einschränkungen.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Wird im Protokoll angezeigt (max. 32 Zeichen)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "6 Ziffern von 1 bis 9, nicht mit 12 beginnend."
+        },
+        "allowed_from_date": {
+          "name": "Gültig ab",
+          "description": "Datum und Uhrzeit, ab denen die Berechtigung gilt."
+        },
+        "allowed_until_date": {
+          "name": "Gültig bis",
+          "description": "Datum und Uhrzeit, bis zu denen die Berechtigung gilt."
+        },
+        "allowed_weekdays": {
+          "name": "Erlaubte Wochentage",
+          "description": "Leer lassen für alle Tage."
+        },
+        "allowed_from_time": {
+          "name": "Tägliche Startzeit",
+          "description": "Beginn des täglichen Zeitfensters."
+        },
+        "allowed_until_time": {
+          "name": "Tägliche Endzeit",
+          "description": "Ende des täglichen Zeitfensters."
+        }
+      }
+    },
+    "update_authorization": {
+      "name": "Berechtigung ändern",
+      "description": "Benennt einen Benutzer, Fob oder Keypad-Code um, aktiviert oder deaktiviert ihn, schränkt ihn ein oder ändert seinen Code.",
+      "fields": {
+        "authorization": {
+          "name": "Berechtigung",
+          "description": "Name oder ID (siehe Attribute der Zugangsschalter)."
+        },
+        "name": {
+          "name": "Neuer Name",
+          "description": "Neuer Name (max. 32 Zeichen)."
+        },
+        "enabled": {
+          "name": "Aktiviert",
+          "description": "Zugang aktivieren oder deaktivieren."
+        },
+        "remote_allowed": {
+          "name": "Fernzugriff",
+          "description": "Nutzung aus der Ferne erlauben (App-Benutzer)."
+        },
+        "code": {
+          "name": "Neuer Code",
+          "description": "6 Ziffern von 1 bis 9, nicht mit 12 beginnend."
+        },
+        "allowed_from_date": {
+          "name": "Gültig ab",
+          "description": "Datum und Uhrzeit, ab denen die Berechtigung gilt."
+        },
+        "allowed_until_date": {
+          "name": "Gültig bis",
+          "description": "Datum und Uhrzeit, bis zu denen die Berechtigung gilt."
+        },
+        "allowed_weekdays": {
+          "name": "Erlaubte Wochentage",
+          "description": "Leer lassen für alle Tage."
+        },
+        "allowed_from_time": {
+          "name": "Tägliche Startzeit",
+          "description": "Beginn des täglichen Zeitfensters."
+        },
+        "allowed_until_time": {
+          "name": "Tägliche Endzeit",
+          "description": "Ende des täglichen Zeitfensters."
+        }
+      }
+    },
+    "delete_authorization": {
+      "name": "Berechtigung löschen",
+      "description": "Löscht einen Benutzer, Fob oder Keypad-Code.",
+      "fields": {
+        "authorization": {
+          "name": "Berechtigung",
+          "description": "Name oder ID."
+        }
+      }
+    },
+    "get_authorizations": {
+      "name": "Berechtigungen auflisten",
+      "description": "Gibt Benutzer, Fobs und Keypad-Codes zurück (ohne die Codes)."
+    },
+    "get_logs": {
+      "name": "Aktivitätsprotokoll abrufen",
+      "description": "Ruft die neuesten Protokolleinträge über die Nuki Web API ab.",
+      "fields": {
+        "limit": {
+          "name": "Einträge",
+          "description": "Anzahl der Einträge (1 bis 50)."
+        }
+      }
+    }
+  }
+}
