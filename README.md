@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/custom_components/nuki_pro/brand/dark_logo.png">
-    <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/custom_components/nuki_pro/brand/logo.png" alt="Nuki" width="180">
-  </picture>
+  <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
 </p>
 
 # Nuki Pro — intégration Home Assistant pour Nuki Smart Lock 5e génération
