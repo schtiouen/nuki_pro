@@ -12,10 +12,10 @@
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/schtiouen/nuki_pro",
+  "documentation": "https://github.com/msdevio/nuki_pro",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/schtiouen/nuki_pro/issues",
+  "issue_tracker": "https://github.com/msdevio/nuki_pro/issues",
   "mqtt": [
     "nuki/+/deviceType"
   ],

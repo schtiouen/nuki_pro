@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
+  <img src="https://raw.githubusercontent.com/msdevio/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
 </p>
 
 # Nuki Pro — intégration Home Assistant pour Nuki Smart Lock 5e génération
@@ -55,7 +55,7 @@ Les attributs des capteurs « Dernier … » donnent l'action, le déclencheur, 
 
 ### Par HACS (recommandé)
 
-1. HACS > menu ⋮ > **Dépôts personnalisés** : URL `https://github.com/schtiouen/nuki_pro`, catégorie **Intégration**.
+1. HACS > menu ⋮ > **Dépôts personnalisés** : URL `https://github.com/msdevio/nuki_pro`, catégorie **Intégration**.
 2. Cherchez **Nuki Pro** dans HACS, téléchargez-le, puis redémarrez Home Assistant.
 
 HACS signale ensuite les nouvelles versions (releases GitHub).

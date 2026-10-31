@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
+  <img src="https://raw.githubusercontent.com/msdevio/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
 </p>
 
 # Nuki Pro — Home Assistant integration for the Nuki Smart Lock (5th generation)
@@ -55,7 +55,7 @@ The attributes of the "Last …" sensors give the action, the trigger, the sourc
 
 ### With HACS (recommended)
 
-1. HACS > ⋮ menu > **Custom repositories**: URL `https://github.com/schtiouen/nuki_pro`, type **Integration**.
+1. HACS > ⋮ menu > **Custom repositories**: URL `https://github.com/msdevio/nuki_pro`, type **Integration**.
 2. Search for **Nuki Pro** in HACS, download it, then restart Home Assistant.
 
 HACS then reports new versions (GitHub releases).
