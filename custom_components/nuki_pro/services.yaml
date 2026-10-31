@@ -35,7 +35,7 @@ create_keypad_code:
   fields:
     name:
       required: true
-      example: Femme de ménage
+      example: Cleaner
       selector:
         text:
     code:
@@ -77,7 +77,7 @@ update_authorization:
   fields:
     authorization:
       required: true
-      example: Femme de ménage
+      example: Cleaner
       selector:
         text:
     name:
@@ -127,7 +127,7 @@ delete_authorization:
   fields:
     authorization:
       required: true
-      example: Femme de ménage
+      example: Cleaner
       selector:
         text:
 

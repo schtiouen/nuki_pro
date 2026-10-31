@@ -2,130 +2,136 @@
   <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/docs/nuki_logo_readme.png" alt="Nuki" width="220">
 </p>
 
-# Nuki Pro — intégration Home Assistant pour Nuki Smart Lock 5e génération
+# Nuki Pro — Home Assistant integration for the Nuki Smart Lock (5th generation)
 
-> Intégration communautaire non officielle, sans lien avec Nuki Home Solutions. Le nom et le logo Nuki sont des marques de Nuki Home Solutions GmbH ; ils servent uniquement à identifier les appareils pris en charge et ne sont pas couverts par la licence MIT.
+> Unofficial community integration, not affiliated with Nuki Home Solutions. The Nuki name and logo are trademarks of Nuki Home Solutions GmbH; they are only used to identify the supported devices and are not covered by the MIT license.
 
-Intégration personnalisée pour la **Nuki Smart Lock Pro (5e génération)**, et plus largement les serrures Nuki de type 5 (Go, Pro, Ultra) et 3.0/4.0 Pro.
-Elle donne accès à toutes les fonctions de la serrure, **sans Bridge** (non compatible avec la 5e génération) et **sans routeur Thread** :
+[Version française](README.fr.md)
 
-- **Nuki Web API** (jeton, obligatoire) : état, réglages, utilisateurs, codes clavier, journal avec les noms ;
-- **MQTT local** (facultatif, désactivé par défaut) : état instantané et actions sur votre réseau, avec bascule automatique sur la Web API.
+Custom integration for the **Nuki Smart Lock Pro (5th generation)**, and more broadly the Nuki type 5 locks (Go, Pro, Ultra) and the 3.0/4.0 Pro.
+It gives access to every feature of the lock **without a Bridge** (not compatible with the 5th generation) and **without a Thread border router**:
 
-## Entités
+- **Nuki Web API** (token, required): state, settings, users, keypad codes, activity log with names;
+- **Local MQTT** (optional, off by default): instant state and actions on your network, with automatic fallback to the Web API.
 
-| Type | Entités |
+## Entities
+
+| Type | Entities |
 | --- | --- |
-| Serrure | Verrouiller, déverrouiller, ouvrir (gâche) ; états ouverte, en ouverture, bloquée ; `changed_by` = dernière personne |
-| Capteurs | Batterie (%), État de la serrure, Mode, État de la porte, Sécurité de la porte, **Dernier utilisateur**, **Dernier déverrouillage par**, **Dernière ouverture par**, **Dernier verrouillage par**, Dernière action, Déclencheur, Heure de la dernière action, Firmware, État du serveur Nuki, Montage du clavier |
-| Capteurs binaires | Porte, Verrouillée, Batterie critique, En charge, Batterie du clavier critique, Batterie du capteur de porte critique, Sabotage du capteur de porte, Sabotage du clavier, Mode nuit actif, Connexion MQTT, Connexion au serveur Nuki, Connexion Web API |
-| Interrupteurs | Verrouillage automatique, Bouton activé, LED activée, Mises à jour automatiques, Vitesse lente en mode nuit, Appairage par le bouton, Cylindre désolidarisé, Poignée à relever, Détection auto du type de piles, **Accès « nom »** (un par utilisateur, fob ou code clavier) |
-| Listes | Bouton : appui simple / double appui, Vitesse du moteur, Délai Lock 'n' Go, Durée d'ouverture de la gâche, Fob : 1/2/3 appuis, Mode Bluetooth, Type de piles |
-| Nombre | Délai de verrouillage automatique |
-| Boutons | Lock 'n' Go, Lock 'n' Go avec ouverture (désactivé par défaut), Verrouillage complet, Actualiser |
-| Événement | **Activité** : chaque action avec la personne, le déclencheur et la source (code, empreinte), appuis « sans action » du bouton ou du fob, codes et empreintes refusés |
+| Lock | Lock, unlock, open (unlatch); open, opening and jammed states; `changed_by` = last person |
+| Sensors | Battery (%), Lock state, Mode, Door security, **Last user**, **Last unlock user**, **Last unlatch user**, **Last lock user**, Last action, Last action trigger, Last action time, Firmware, Nuki server state |
+| Binary sensors | Locked, Battery critical, Charging, Night mode active, MQTT connection, Nuki server connection, Web API connection |
+| Switches | Auto lock, Button enabled, LED enabled, Automatic updates, Slow speed in night mode, Pairing via button, Detached cylinder, Lift-up handle, Automatic battery type detection, **Access "name"** (one per app user) |
+| Selects | Single button press, Double button press, Motor speed, Lock 'n' Go timeout, Unlatch duration, Bluetooth advertising mode, Battery type |
+| Number | Auto lock timeout |
+| Buttons | Lock 'n' Go, Lock 'n' Go with unlatch (disabled by default), Full lock, Refresh |
+| Event | **Activity**: every lock action with the person, the trigger and the source (code, fingerprint), button or fob presses set to "no action", rejected codes and fingerprints |
 
-### Accessoires
+### Accessories
 
-Chaque accessoire appairé devient son propre appareil, relié à la serrure (« connecté via ») :
+Each paired accessory becomes its own device, linked to the lock ("connected via"):
 
-| Appareil | Entités |
+| Device | Entities |
 | --- | --- |
-| **Capteur de porte** (Door Sensor) | Porte ouverte/fermée, État (fermée, ouverte, calibrage, retiré…), Batterie critique, Sabotage, **Événements** : porte ouverte, porte fermée, porte restée ouverte, état incohérent, capteur bloqué |
-| **Clavier** (Keypad / Keypad 2) | Batterie critique, Sabotage et Montage (antivol du Keypad 2), un interrupteur **Accès** par code clavier (nombre d'empreintes en attribut) |
-| **Fob** | Action à 1, 2 et 3 appuis, interrupteur **Accès** du fob |
+| **Door sensor** | Door open/closed, State (closed, open, calibrating, removed…), Battery critical, Tamper, **Events**: door opened, door closed, door left open, status mismatch, sensor jammed |
+| **Keypad** (Keypad / Keypad 2) | Battery critical, Tamper and Mounting (Keypad 2 anti-theft), one **Access** switch per keypad code (number of fingerprints as an attribute) |
+| **Fob** | Single, double and triple press actions, fob **Access** switch |
 
-« Sécurité de la porte » (fermée et verrouillée, fermée non verrouillée, ouverte) reste sur la serrure car elle combine les deux. Un accessoire n'apparaît que s'il est appairé ; s'il est ajouté plus tard, ses entités sont créées sans redémarrage.
+"Door security" (closed and locked, closed not locked, open) stays on the lock because it combines both. An accessory only shows up once paired; when added later, its entities are created without a restart.
 
-Les réglages peu courants sont créés désactivés : activez-les depuis la page de l'appareil.
+Rarely used settings are created disabled: enable them from the device page.
 
-Les attributs des capteurs « Dernier … » donnent l'action, le déclencheur, la source et l'horodatage. Les codes clavier ne sont jamais exposés.
+The attributes of the "Last …" sensors give the action, the trigger, the source and the timestamp. Keypad codes are never exposed.
 
-## Prérequis
+## Requirements
 
-1. **Jeton Nuki Web API** : sur [web.nuki.io](https://web.nuki.io), menu **API**, générez un jeton en cochant les droits pour voir et gérer les serrures, les actionner, gérer les autorisations et la configuration, et voir le journal d'activité. Nuki Web doit être activé pour la serrure dans l'app.
-2. **MQTT (facultatif)** : dans l'app Nuki, réglages de la serrure, *Fonctionnalités et configuration* > *Smart Home* > *MQTT* :
-   - adresse du broker (Mosquitto), identifiant et mot de passe (32 caractères au plus) ; Nuki impose le port 1883 sans TLS, sur le réseau local ;
-   - **désactivez la « Découverte automatique » (Auto discovery)**, sinon la serrure crée des entités en double dans l'intégration MQTT ;
-   - laissez **« Autoriser le verrouillage »** activé pour les actions locales.
+1. **Nuki Web API token**: on [web.nuki.io](https://web.nuki.io), menu **API**, generate a token with the permissions to view and manage smart locks, operate them, manage authorizations and configuration, and view the activity log. Nuki Web must be enabled for the lock in the Nuki app.
+2. **MQTT (optional)**: in the Nuki app, lock settings, *Features & Configuration* > *Smart Home* > *MQTT*:
+   - broker address (Mosquitto), username and password (32 characters at most); Nuki requires port 1883 without TLS, on the local network;
+   - **turn off "Auto discovery"**, otherwise the lock creates duplicate entities in the MQTT integration;
+   - keep **"Allow locking"** on for local actions.
 
 ## Installation
 
-### Par copie (sans HACS)
+### With HACS (recommended)
 
-Copiez le dossier `custom_components/nuki_pro` dans le dossier `custom_components` de votre configuration Home Assistant (module complémentaire Samba, SSH ou Studio Code Server), pour obtenir `/config/custom_components/nuki_pro/`. Redémarrez Home Assistant.
+1. HACS > ⋮ menu > **Custom repositories**: URL `https://github.com/schtiouen/nuki_pro`, type **Integration**.
+2. Search for **Nuki Pro** in HACS, download it, then restart Home Assistant.
 
-### Par HACS (recommandé)
+HACS then reports new versions (GitHub releases).
 
-1. HACS > menu ⋮ > **Dépôts personnalisés** : URL `https://github.com/schtiouen/nuki_pro`, catégorie **Intégration**.
-2. Cherchez **Nuki Pro** dans HACS, téléchargez-le, puis redémarrez Home Assistant.
+### Manually
 
-HACS signale ensuite les nouvelles versions (releases GitHub).
+Copy the `custom_components/nuki_pro` folder into the `custom_components` folder of your Home Assistant configuration (Samba, SSH or Studio Code Server add-on), to get `/config/custom_components/nuki_pro/`. Restart Home Assistant.
 
-### Ajout de la serrure
+### Adding the lock
 
-**Paramètres > Appareils et services > Ajouter une intégration > Nuki Pro**, collez le jeton, puis choisissez d'utiliser le MQTT ou non. Si le MQTT de la serrure est actif, Home Assistant propose aussi la serrure dans « Découverts ».
+**Settings > Devices & services > Add integration > Nuki Pro**, paste the token, then choose whether to use MQTT. When the lock's MQTT is on, Home Assistant also offers the lock under "Discovered".
 
-Si vous utilisiez une autre intégration Nuki, supprimez-la et révoquez son jeton sur web.nuki.io.
+If you used another Nuki integration before, remove it and revoke its token on web.nuki.io.
 
 ### Options
 
-| Option | Par défaut | Effet |
+| Option | Default | Effect |
 | --- | --- | --- |
-| Intervalle d'interrogation de la Web API | Vide = automatique : 30 s, ou 300 s quand le MQTT est actif | 15 à 3600 s (limite Nuki : 1000 requêtes/h) |
-| Canal des actions | Automatique | MQTT si joignable, sinon Web API ; ou forcer l'un des deux |
-| Un interrupteur par utilisateur ou code | Oui | Désactivable si vous avez beaucoup de codes |
+| Web API polling interval | Empty = automatic: 30 s, or 300 s while MQTT is online | 15 to 3600 s (Nuki limit: 1000 requests per hour) |
+| Channel for lock actions | Automatic | MQTT when online, else Web API; or force one of them |
+| One switch per user or code | Yes | Turn it off if you have many codes |
 
-## Services
+## Languages
 
-Tous ciblent l'entité serrure.
+The interface is available in **English** and **French**. Forms, states, actions and error messages follow each user's language; entity and device names are created in the system language when the integration is added. Other languages fall back to English. Translations are welcome in `custom_components/nuki_pro/translations/`.
+
+## Actions (services)
+
+All of them target the lock entity.
 
 ```yaml
-# Verrouillage complet (double tour)
+# Full lock (double turn)
 action: nuki_pro.lock_action
 target:
-  entity_id: lock.porte_d_entree
+  entity_id: lock.front_door
 data:
   action: full_lock          # unlock, lock, unlatch, lock_n_go, lock_n_go_unlatch, full_lock
-  transport: web             # facultatif : auto, mqtt, web
+  transport: web             # optional: auto, mqtt, web
 
-# Code clavier valable le lundi et le vendredi de 9 h à 12 h 30
+# Keypad code valid on Mondays and Fridays from 9:00 to 12:30
 action: nuki_pro.create_keypad_code
 target:
-  entity_id: lock.porte_d_entree
+  entity_id: lock.front_door
 data:
-  name: Livreur
-  code: "456789"             # 6 chiffres de 1 à 9, ne commençant pas par 12
+  name: Delivery
+  code: "456789"             # 6 digits from 1 to 9, not starting with 12
   allowed_weekdays: [mon, fri]
   allowed_from_time: "09:00"
   allowed_until_time: "12:30"
 
-# Désactiver un accès (nom ou identifiant)
+# Disable an access (name or id)
 action: nuki_pro.update_authorization
 target:
-  entity_id: lock.porte_d_entree
+  entity_id: lock.front_door
 data:
-  authorization: Livreur
+  authorization: Delivery
   enabled: false
 
-# Supprimer un accès
+# Delete an access
 action: nuki_pro.delete_authorization
 target:
-  entity_id: lock.porte_d_entree
+  entity_id: lock.front_door
 data:
-  authorization: Livreur
+  authorization: Delivery
 ```
 
-`nuki_pro.get_authorizations` et `nuki_pro.get_logs` (`limit` de 1 à 50) renvoient une réponse utilisable dans un script (`response_variable`).
+`nuki_pro.get_authorizations` and `nuki_pro.get_logs` (`limit` from 1 to 50) return a response usable in scripts (`response_variable`).
 
-## Automatisations
+## Automations
 
-L'entité **Activité** se déclenche à chaque action. Exemple : notification quand quelqu'un ouvre avec un code clavier.
+The **Activity** entity fires on every action. Example: a notification when someone opens the door with a keypad code.
 
 ```yaml
 triggers:
   - trigger: state
-    entity_id: event.porte_d_entree_activite
+    entity_id: event.front_door_activity
 conditions:
   - condition: template
     value_template: >
@@ -134,30 +140,30 @@ conditions:
 actions:
   - action: notify.notify
     data:
-      message: "Porte ouverte par {{ trigger.to_state.attributes.user }}"
+      message: "Door opened by {{ trigger.to_state.attributes.user }}"
 ```
 
-Types d'événement de l'entité **Activité** : `unlock`, `lock`, `unlatch`, `lock_n_go`, `lock_n_go_unlatch`, `full_lock`, `button_no_action`, `fob_no_action`, `wrong_code`, `wrong_fingerprint`.
+Event types of the **Activity** entity: `unlock`, `lock`, `unlatch`, `lock_n_go`, `lock_n_go_unlatch`, `full_lock`, `button_no_action`, `fob_no_action`, `wrong_code`, `wrong_fingerprint`.
 
-Types d'événement de l'entité **Événements** du capteur de porte : `door_opened`, `door_closed`, `door_ajar_warning` (porte restée ouverte), `door_status_mismatch`, `door_sensor_jammed`.
+Event types of the door sensor **Events** entity: `door_opened`, `door_closed`, `door_ajar_warning` (door left open), `door_status_mismatch`, `door_sensor_jammed`.
 
-Astuce : réglez dans l'app Nuki une action de bouton (ou de fob) sur « aucune action ». Avec le MQTT, chaque appui déclenche alors `button_no_action` (ou `fob_no_action`) avec l'attribut `presses`, utilisable comme bouton d'automatisation.
+Tip: in the Nuki app, set a button (or fob) action to "no action". With MQTT, each press then fires `button_no_action` (or `fob_no_action`) with a `presses` attribute, usable as an automation button.
 
-Les identifiants d'entité dépendent du nom de la serrure et de la langue de Home Assistant : vérifiez-les sur la page de l'appareil.
+Entity ids depend on the lock name and on the Home Assistant language: check them on the device page.
 
-## Fonctionnement
+## How it works
 
-- Avec le MQTT, l'état arrive instantanément et ses valeurs priment ; la Web API est interrogée toutes les 5 min pour les réglages, les accès et le journal, et juste après chaque activité pour récupérer le nom de la personne.
-- Sans MQTT, la Web API est interrogée toutes les 30 s : état, réglages et journal (2 requêtes par cycle, environ 250 par heure pour une limite de 1000) ; accès relus toutes les 15 min et après chaque changement.
-- Si le MQTT tombe (serrure hors ligne, broker arrêté), la Web API prend le relais, à 30 s, sans rendre les entités indisponibles. Une action MQTT sans réponse est renvoyée par la Web API ; elle ne peut pas s'exécuter en retard (expiration de 10 s en MQTT 5, QoS 0 en MQTT 3.1.1).
-- Si le jeton est révoqué alors que le MQTT fonctionne, la serrure reste utilisable en local et Home Assistant demande un nouveau jeton.
-- Les changements de réglages s'affichent tout de suite, puis sont confirmés à la lecture suivante.
-- Les accès modifiés dans l'app ne remontent sur Nuki Web qu'une fois par jour : le bouton **Actualiser** demande une synchronisation.
+- With MQTT, the state arrives instantly and its values win; the Web API is polled every 5 minutes for settings, users and the log, and right after each activity to get the person's name.
+- Without MQTT, the Web API is polled every 30 s: state, settings and log (2 requests per cycle, about 250 per hour for a limit of 1000); users are read again every 15 minutes and after each change.
+- When MQTT goes down (lock offline, broker stopped), the Web API takes over at 30 s, without making the entities unavailable. An MQTT action without an answer is resent through the Web API; it cannot run late (10 s expiry on MQTT 5, QoS 0 on MQTT 3.1.1).
+- If the token is revoked while MQTT works, the lock stays usable locally and Home Assistant asks for a new token.
+- Setting changes show up at once, then are confirmed by the next read.
+- Users changed in the Nuki app reach Nuki Web only once a day: the **Refresh** button requests a sync.
 
-## Dépannage
+## Troubleshooting
 
-- **Diagnostics** : page de l'appareil > ⋮ > *Télécharger les diagnostics* (jeton, codes, noms et GPS masqués).
-- **Journaux détaillés** :
+- **Diagnostics**: device page > ⋮ > *Download diagnostics* (token, codes, names and GPS position are redacted).
+- **Debug logs**:
 
   ```yaml
   logger:
@@ -165,10 +171,10 @@ Les identifiants d'entité dépendent du nom de la serrure et de la langue de Ho
       custom_components.nuki_pro: debug
   ```
 
-- **« Rien reçu sur ce topic »** : vérifiez le MQTT dans l'app Nuki et le topic `nuki/<NUKI_ID>` avec MQTT Explorer, ou décochez MQTT.
-- **Connexion MQTT qui clignote** : défaut connu du firmware 5.9.4 en Wi-Fi ; l'intégration bascule sur la Web API en attendant.
+- **"Nothing received on this topic"**: check MQTT in the Nuki app and the `nuki/<NUKI_ID>` topic with MQTT Explorer, or untick MQTT.
+- **MQTT connection flapping**: known issue of firmware 5.9.4 over Wi-Fi; the integration falls back to the Web API meanwhile.
 
-## Développement
+## Development
 
 ```bash
 uv venv -p 3.14 .venv
@@ -176,10 +182,10 @@ uv pip install --python .venv/bin/python -r requirements_test.txt
 .venv/bin/python -m pytest tests/
 ```
 
-27 tests couvrent le mode Web API seule, le mode MQTT, les accessoires, l'assistant de configuration et les diagnostics (Home Assistant 2026.10.4). Ils tournent aussi dans GitHub Actions, avec les validations hassfest et HACS.
+28 tests cover the Web API only mode, the MQTT mode, the accessories, the config flow, the diagnostics and the brand images (Home Assistant 2026.10.4). They also run in GitHub Actions, with the hassfest and HACS validations.
 
-Sources : [spécification Web API](https://api.nuki.io/static/swagger/swagger.json), [spécification MQTT v1.6](https://developer.nuki.io/t/about-the-mqtt-category/14233), [documentation Nuki](https://docs.nuki.io/guide/).
+Sources: [Web API specification](https://api.nuki.io/static/swagger/swagger.json), [MQTT API specification v1.6](https://developer.nuki.io/t/about-the-mqtt-category/14233), [Nuki documentation](https://docs.nuki.io/guide/).
 
-## Licence
+## License
 
-Code sous licence [MIT](LICENSE) © 2026 msaid_dev. Le logo Nuki (dossier `brand/`) reste la propriété de Nuki Home Solutions GmbH.
+Code under the [MIT](LICENSE) license © 2026 msaid_dev. The Nuki logo (`brand/` folder) remains the property of Nuki Home Solutions GmbH.
