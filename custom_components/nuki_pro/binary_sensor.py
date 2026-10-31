@@ -88,7 +88,7 @@ class NukiBinarySensorDescription(BinarySensorEntityDescription):
 BINARY_SENSORS: tuple[NukiBinarySensorDescription, ...] = (
     # Lock
     NukiBinarySensorDescription(
-        # hass_nuki_ng "Locked": on means unlocked (lock device class)
+        # Lock device class: on means unlocked
         key="locked",
         translation_key="locked",
         device_class=BinarySensorDeviceClass.LOCK,

@@ -1,4 +1,4 @@
-"""Web API only mode (token, no MQTT), like hass_nuki_ng without a Bridge."""
+"""Web API only mode (token, no MQTT)."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ def _calls(aioclient_mock: AiohttpClientMocker, method: str, suffix: str) -> lis
 
 
 async def test_entities(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
-    """Every hass_nuki_ng entity has its counterpart, with the right values."""
+    """Every lock entity is created, with the right values."""
     await _setup(hass, aioclient_mock)
 
     assert hass.states.get(LOCK).state == "locked"

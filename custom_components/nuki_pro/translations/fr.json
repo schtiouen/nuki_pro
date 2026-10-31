@@ -37,7 +37,7 @@
       },
       "mqtt_setup": {
         "title": "MQTT local (facultatif)",
-        "description": "Le MQTT est facultatif et désactivé par défaut : comme avec hass_nuki_ng, tout passe alors par la Web API, interrogée toutes les 30 s. Avec le MQTT, l'état arrive instantanément et les actions restent sur votre réseau ; activez d'abord le MQTT dans l'app Nuki avec votre broker. Serrure trouvée sur le broker : {detected}",
+        "description": "Le MQTT est facultatif et désactivé par défaut : tout passe alors par la Web API, interrogée toutes les 30 s. Avec le MQTT, l'état arrive instantanément et les actions restent sur votre réseau ; activez d'abord le MQTT dans l'app Nuki avec votre broker. Serrure trouvée sur le broker : {detected}",
         "data": {
           "use_mqtt": "Utiliser MQTT",
           "mqtt_topic": "Topic de la serrure"

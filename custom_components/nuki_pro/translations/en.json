@@ -37,7 +37,7 @@
       },
       "mqtt_setup": {
         "title": "Local MQTT (optional)",
-        "description": "MQTT is optional and off by default: like hass_nuki_ng, everything then goes through the Web API, polled every 30 s. With MQTT, the state arrives instantly and lock actions stay on your network; enable MQTT in the Nuki app with your broker first. Lock found on the broker: {detected}",
+        "description": "MQTT is optional and off by default: everything then goes through the Web API, polled every 30 s. With MQTT, the state arrives instantly and lock actions stay on your network; enable MQTT in the Nuki app with your broker first. Lock found on the broker: {detected}",
         "data": {
           "use_mqtt": "Use MQTT",
           "mqtt_topic": "Lock topic"

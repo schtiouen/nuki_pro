@@ -282,7 +282,7 @@ class NukiProConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="mqtt_setup",
             data_schema=vol.Schema(
                 {
-                    # Web API only by default, like hass_nuki_ng
+                    # Web API only by default
                     vol.Required(CONF_USE_MQTT, default=False): BooleanSelector(),
                     vol.Required(
                         CONF_MQTT_TOPIC,

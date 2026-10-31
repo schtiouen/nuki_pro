@@ -174,7 +174,7 @@ LOG_ACTIONS: Final = {
     254: "log_enabled",
     255: "log_disabled",
 }
-# "Last unlock user" (hass_nuki_ng): unlock, unlatch, lock 'n' go with unlatch
+# Last unlock user: unlock, unlatch, lock 'n' go with unlatch
 UNLOCK_LOG_ACTIONS: Final = frozenset({1, 3, 5})
 # Door opened by the latch: unlatch, lock 'n' go with unlatch
 UNLATCH_LOG_ACTIONS: Final = frozenset({3, 5})

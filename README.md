@@ -7,7 +7,7 @@
 > Intégration communautaire non officielle, sans lien avec Nuki Home Solutions. Le nom et le logo Nuki sont des marques de Nuki Home Solutions GmbH ; ils servent uniquement à identifier les appareils pris en charge et ne sont pas couverts par la licence MIT.
 
 Intégration personnalisée pour la **Nuki Smart Lock Pro (5e génération)**, et plus largement les serrures Nuki de type 5 (Go, Pro, Ultra) et 3.0/4.0 Pro.
-Elle reprend tout ce que proposait [hass_nuki_ng](https://github.com/kvj/hass_nuki_ng) pour une serrure, **sans Bridge** (non compatible avec la 5e génération) et **sans routeur Thread** :
+Elle donne accès à toutes les fonctions de la serrure, **sans Bridge** (non compatible avec la 5e génération) et **sans routeur Thread** :
 
 - **Nuki Web API** (jeton, obligatoire) : état, réglages, utilisateurs, codes clavier, journal avec les noms ;
 - **MQTT local** (facultatif, désactivé par défaut) : état instantané et actions sur votre réseau, avec bascule automatique sur la Web API.
@@ -66,7 +66,7 @@ HACS signale ensuite les nouvelles versions (releases GitHub).
 
 **Paramètres > Appareils et services > Ajouter une intégration > Nuki Pro**, collez le jeton, puis choisissez d'utiliser le MQTT ou non. Si le MQTT de la serrure est actif, Home Assistant propose aussi la serrure dans « Découverts ».
 
-Supprimez ensuite l'ancienne intégration hass_nuki_ng et révoquez son jeton sur web.nuki.io.
+Si vous utilisiez une autre intégration Nuki, supprimez-la et révoquez son jeton sur web.nuki.io.
 
 ### Options
 
