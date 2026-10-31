@@ -1,4 +1,13 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/custom_components/nuki_pro/brand/dark_logo.png">
+    <img src="https://raw.githubusercontent.com/schtiouen/nuki_pro/main/custom_components/nuki_pro/brand/logo.png" alt="Nuki" width="180">
+  </picture>
+</p>
+
 # Nuki Pro — intégration Home Assistant pour Nuki Smart Lock 5e génération
+
+> Intégration communautaire non officielle, sans lien avec Nuki Home Solutions. Le nom et le logo Nuki sont des marques de Nuki Home Solutions GmbH ; ils servent uniquement à identifier les appareils pris en charge et ne sont pas couverts par la licence MIT.
 
 Intégration personnalisée pour la **Nuki Smart Lock Pro (5e génération)**, et plus largement les serrures Nuki de type 5 (Go, Pro, Ultra) et 3.0/4.0 Pro.
 Elle reprend tout ce que proposait [hass_nuki_ng](https://github.com/kvj/hass_nuki_ng) pour une serrure, **sans Bridge** (non compatible avec la 5e génération) et **sans routeur Thread** :
@@ -176,4 +185,4 @@ Sources : [spécification Web API](https://api.nuki.io/static/swagger/swagger.js
 
 ## Licence
 
-[MIT](LICENSE) © 2026 msaid_dev.
+Code sous licence [MIT](LICENSE) © 2026 msaid_dev. Le logo Nuki (dossier `brand/`) reste la propriété de Nuki Home Solutions GmbH.
