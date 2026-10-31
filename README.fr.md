@@ -188,4 +188,4 @@ Sources : [spécification Web API](https://api.nuki.io/static/swagger/swagger.js
 
 ## Licence
 
-Code sous licence [MIT](LICENSE) © 2026 msaid_dev. Le logo Nuki (dossier `brand/`) reste la propriété de Nuki Home Solutions GmbH.
+Code sous licence [MIT](LICENSE) © 2026 msdevio. Le logo Nuki (dossier `brand/`) reste la propriété de Nuki Home Solutions GmbH.
